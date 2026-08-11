@@ -1,0 +1,15 @@
+{
+	"appName": "Ritual Materials",
+	"description": "Necromancy ritual material calculator — inks, candles, focus objects, and the necroplasm rituals behind them.",
+	"appUrl": "./index.html",
+	"configUrl": "./appconfig.json",
+	"iconUrl": "./icon.png",
+	"defaultWidth": 380,
+	"defaultHeight": 640,
+	"minWidth": 300,
+	"minHeight": 240,
+	"maxWidth": 1000,
+	"maxHeight": 1600,
+	"requestHandlers": [],
+	"activators": []
+}

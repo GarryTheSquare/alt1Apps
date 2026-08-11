@@ -1,0 +1,16 @@
+{
+	"appName": "Archaeology Tracker",
+	"description": "Archaeology training guide, artefact tracker, restoration materials and collection overview.",
+	"appUrl": "./index.html",
+	"configUrl": "./appconfig.json",
+	"iconUrl": "./icon.png",
+	"defaultWidth": 420,
+	"defaultHeight": 620,
+	"minWidth": 300,
+	"minHeight": 240,
+	"maxWidth": 1200,
+	"maxHeight": 1600,
+	"requestHandlers": [],
+	"activators": [],
+	"permissions": "pixel"
+}

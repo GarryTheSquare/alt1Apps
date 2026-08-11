@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alt1 Apps</title>
+<style>
+  :root {
+    --outer-bg:#c0a886; --body-main:#e2dbc8; --body-light:#d8ccb4;
+    --body-mid:#d0bd97; --body-border:#94866d; --sidebar:#cfc08d;
+    --link-color:#936039; --text-color:#000;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; padding:2rem 1rem; background:var(--outer-bg); color:var(--text-color);
+    font:15px/1.5 Georgia,'Times New Roman',serif; }
+  main { max-width:760px; margin:0 auto; background:var(--body-main);
+    border:1px solid var(--body-border); box-shadow:0 0 7px rgba(0,0,0,0.2);
+    padding:1.5rem 1.75rem; }
+  h1 { font-weight:normal; margin:0 0 .25rem; }
+  .sub { color:#5a4a34; font-size:.9rem; margin:0 0 1.25rem; }
+  ul { list-style:none; margin:0; padding:0; }
+  .app { display:flex; align-items:center; gap:.9rem; padding:.7rem 0;
+    border-top:1px solid var(--body-border); }
+  .app:first-child { border-top:0; }
+  .icon { width:32px; height:32px; flex:0 0 32px; image-rendering:pixelated;
+    background:var(--body-light); border:1px solid var(--body-border); }
+  .meta { flex:1 1 auto; min-width:0; }
+  .name { font-size:1.05rem; color:var(--link-color); text-decoration:none; }
+  .name:hover { text-decoration:underline; }
+  .desc { margin:.15rem 0 0; font-size:.85rem; color:#3a2f22; }
+  .actions { flex:0 0 auto; display:flex; gap:.4rem; }
+  .add { background:var(--body-mid); border:1px solid var(--body-border);
+    color:var(--text-color); text-decoration:none; padding:.35rem .7rem; border-radius:3px;
+    font-size:.85rem; white-space:nowrap; }
+  .add:hover { background:var(--sidebar); }
+  /* The public copy is the secondary choice on the homelab page: same app, fewer
+     features, only worth installing when you're away from the tailnet. */
+  .add.public { background:var(--body-light); }
+  .add.public:hover { background:var(--body-mid); }
+  footer { max-width:760px; margin:1rem auto 0; color:#5a4a34; font-size:.8rem; }
+  code { background:var(--body-light); padding:.05rem .3rem; border:1px solid var(--body-border); }
+  .empty { color:#5a4a34; font-style:italic; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Alt1 Toolkit apps</h1>
+  <p class="sub">Click <strong>Add to Alt1</strong> to install a tool (opens the Alt1 client), or the name to open it in a browser. You need the free <a href="https://runeapps.org/alt1" style="color:var(--link-color)">Alt1 Toolkit</a> installed for the install links to do anything.</p>
+  <ul>
+        <li class="app">
+            <img class="icon" src="archaeology/icon.png" alt="" width="32" height="32">
+            <div class="meta">
+                <a class="name" href="archaeology/">Archaeology Tracker</a>
+                <p class="desc">Archaeology training guide, artefact tracker, restoration materials and collection overview.</p>
+            </div>
+            <div class="actions">
+                <a class="add" data-dir="archaeology" href="#" title="Install the copy served from this homelab">Add to Alt1</a>
+                
+            </div>
+        </li>
+        <li class="app">
+            <img class="icon" src="metronome/icon.png" alt="" width="32" height="32">
+            <div class="meta">
+                <a class="name" href="metronome/">Metronomes</a>
+                <p class="desc">Visual metronomes — counters that loop 1 to N on a game-tick interval, shown in resizable panels over the game.</p>
+            </div>
+            <div class="actions">
+                <a class="add" data-dir="metronome" href="#" title="Install the copy served from this homelab">Add to Alt1</a>
+                
+            </div>
+        </li>
+        <li class="app">
+            <img class="icon" src="ritualcalc/icon.png" alt="" width="32" height="32">
+            <div class="meta">
+                <a class="name" href="ritualcalc/">Ritual Materials</a>
+                <p class="desc">Necromancy ritual material calculator — inks, candles, focus objects, and the necroplasm rituals behind them.</p>
+            </div>
+            <div class="actions">
+                <a class="add" data-dir="ritualcalc" href="#" title="Install the copy served from this homelab">Add to Alt1</a>
+                
+            </div>
+        </li>
+        <li class="app">
+            <img class="icon" src="thieving/icon.png" alt="" width="32" height="32">
+            <div class="meta">
+                <a class="name" href="thieving/">Thieving Tables</a>
+                <p class="desc">Pickpocketing, stall and chest tables from the wiki, each with its full loot table.</p>
+            </div>
+            <div class="actions">
+                <a class="add" data-dir="thieving" href="#" title="Install the copy served from this homelab">Add to Alt1</a>
+                
+            </div>
+        </li></ul>
+</main>
+<footer>Free and open source — <a href="https://github.com/GarryTheSquare/alt1Apps" style="color:var(--link-color)">source on GitHub</a>. Not affiliated with Jagex or RuneApps.</footer>
+<script>
+  // Build absolute appconfig URLs from wherever this page was loaded, so the
+  // alt1:// links resolve for every host that can reach it. Only the local
+  // buttons: the public ones carry an absolute URL already.
+  var base = location.origin + location.pathname.replace(/[^/]*$/, "");
+  document.querySelectorAll("a.add[data-dir]").forEach(function (el) {
+    el.href = "alt1://addapp/" + base + el.dataset.dir + "/appconfig.json";
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Metronome panel</title>
+		<style>
+			html, body { margin: 0; height: 100%; overflow: hidden;
+				font: 12px/1.3 system-ui, sans-serif; color: #ddd; background: transparent; }
+			body { display: flex; flex-direction: column; }
+
+			/* The window's own backdrop. Kept as a layer of its own so its opacity
+			   never fades the numbers drawn on top of it. */
+			#bg { position: fixed; inset: 0; z-index: -1; background: #000; }
+
+			/* Only in the way when the pointer is actually over the panel. */
+			#head { position: absolute; left: 0; right: 0; top: 0; z-index: 2;
+				display: flex; align-items: center; gap: 4px; padding: 2px 4px;
+				background: rgba(20,20,20,.85); border-bottom: 1px solid #333;
+				opacity: 0; transition: opacity .12s; pointer-events: none;
+				-webkit-app-region: drag; }
+			body:hover #head { opacity: 1; pointer-events: auto; }
+			#head .name { flex: 1 1 auto; min-width: 0; overflow: hidden;
+				white-space: nowrap; text-overflow: ellipsis; color: #e8b23a; font-size: 11px; }
+			#head button { -webkit-app-region: no-drag;
+				background: #2a2a2a; color: #ddd; border: 1px solid #3a3a3a;
+				border-radius: 3px; padding: 0 6px; font: inherit; cursor: pointer; }
+			#head button:hover { background: #343434; }
+
+			#grid { flex: 1 1 auto; display: grid; gap: 2px; padding: 2px;
+				min-height: 0; min-width: 0; }
+			.cell { display: flex; flex-direction: column; align-items: center;
+				justify-content: center; min-width: 0; min-height: 0; overflow: hidden; }
+			.cell .label { color: #999; max-width: 100%; overflow: hidden;
+				white-space: nowrap; text-overflow: ellipsis; }
+			.cell .num { font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums;
+				text-shadow: 0 0 3px #000, 0 1px 2px #000; }
+			.cell.stopped .num { opacity: .3; }
+			.cell .bar { width: 84%; height: 2px; margin-top: 4px; background: #ffffff22;
+				border-radius: 1px; overflow: hidden; flex: 0 0 auto; }
+			.cell .bar i { display: block; height: 100%; background: currentColor;
+				transform-origin: left center; }
+
+			#msg { flex: 1 1 auto; display: flex; align-items: center;
+				justify-content: center; text-align: center; padding: 8px; color: #888; }
+		</style>
+	</head>
+	<body>
+		<div id="bg"></div>
+		<div id="head">
+			<span class="name"></span>
+			<button id="run" title="Start / stop every metronome in this panel">▶</button>
+		</div>
+		<div id="grid"></div>
+		<div id="msg" hidden></div>
+
+		<script>
+			// Metronome display window. Opened by the app's main page with
+			// ?panel=<id>; inside Alt1 that makes it a separate always-on-top
+			// window over the game, which is the whole point.
+			//
+			// Configuration is read straight from localStorage — this page never
+			// writes anything except the start/stop button, and it derives the
+			// count from Date.now() rather than from any message, so panels stay
+			// in lockstep with each other and with the main window. The counting
+			// maths is duplicated from index.ts on purpose: this page is plain
+			// HTML with no bundle of its own (same convention as dailyscape's
+			// task pages), and it is ten lines.
+			var STORAGE_KEY = "metronome.config";
+			var TICK_MS = 600;
+			var CHANNEL = "metronome.sync";
+
+			var panelId = new URLSearchParams(location.search).get("panel");
+			var gridEl = document.getElementById("grid");
+			var msgEl = document.getElementById("msg");
+			var bgEl = document.getElementById("bg");
+			var headEl = document.getElementById("head");
+			var nameEl = headEl.querySelector(".name");
+			var runEl = document.getElementById("run");
+
+			var config = null, panel = null, metros = [], cells = [], sig = "";
+
+			function load() {
+				try {
+					var raw = localStorage.getItem(STORAGE_KEY);
+					return raw ? JSON.parse(raw) : null;
+				} catch (e) { return null; }
+			}
+
+			function save() {
+				localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+				if (bus) bus.postMessage("update");
+			}
+
+			function countOf(m, now) {
+				if (m.startedAt == null) return null;
+				var period = m.ticks * TICK_MS;
+				var step = Math.floor((now - m.startedAt) / period);
+				return ((step % m.length) + m.length) % m.length + 1;
+			}
+
+			/** 0..1 through the current count — drives the progress bar. */
+			function progressOf(m, now) {
+				if (m.startedAt == null) return 0;
+				var period = m.ticks * TICK_MS;
+				var into = (now - m.startedAt) % period;
+				return (into < 0 ? into + period : into) / period;
+			}
+
+			function colorOf(m, count) {
+				for (var i = 0; i < m.ranges.length; i++) {
+					var r = m.ranges[i];
+					if (count >= r.from && count <= r.to) return r.color;
+				}
+				return m.color;
+			}
+
+			function hexToRgb(hex) {
+				var h = /^#([0-9a-f]{6})$/i.exec(hex || "");
+				var n = h ? parseInt(h[1], 16) : 0;
+				return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+			}
+
+			// -- building ---------------------------------------------------
+
+			function refresh() {
+				config = load();
+				panel = config && (config.panels || []).filter(function (p) { return p.id === panelId; })[0];
+				if (!panel) {
+					metros = [];
+					cells = [];
+					sig = "";
+					gridEl.innerHTML = "";
+					message("This panel no longer exists. Close this window.");
+					return;
+				}
+				metros = (config.metronomes || []).filter(function (m) { return m.panel === panelId; });
+				document.title = panel.name + " — metronome";
+				nameEl.textContent = panel.name;
+
+				var rgb = hexToRgb(panel.bg);
+				bgEl.style.background = "rgba(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + "," + (panel.opacity / 100) + ")";
+
+				// Only rebuild the DOM when something structural changed; the
+				// numbers themselves are updated in place every frame.
+				var next = JSON.stringify([panel.labels, panel.bar, metros.map(function (m) {
+					return [m.id, m.name, m.length];
+				})]);
+				if (next !== sig) build(next);
+				layout();
+				paint(Date.now());
+			}
+
+			function build(next) {
+				sig = next;
+				gridEl.innerHTML = "";
+				cells = metros.map(function (m) {
+					var cell = document.createElement("div");
+					cell.className = "cell";
+					cell.innerHTML =
+						(panel.labels ? '<div class="label"></div>' : "") +
+						'<div class="num">1</div>' +
+						(panel.bar ? '<div class="bar"><i></i></div>' : "");
+					var label = cell.querySelector(".label");
+					if (label) label.textContent = m.name;
+					gridEl.appendChild(cell);
+					return { m: m, el: cell, num: cell.querySelector(".num"),
+						bar: cell.querySelector(".bar i"), shown: null, color: null };
+				});
+				message(metros.length ? null : "No metronomes assigned to this panel yet.");
+			}
+
+			function message(text) {
+				msgEl.hidden = text == null;
+				gridEl.hidden = text != null;
+				headEl.hidden = !panel;
+				msgEl.textContent = text || "";
+			}
+
+			// -- layout -----------------------------------------------------
+
+			// Pick the column count that lets the digits render largest, then size
+			// the font to the resulting cell. Redone on every resize, so the panel
+			// stays readable at any size the user drags it to.
+			function layout() {
+				if (!cells.length) return;
+				var w = gridEl.clientWidth, h = gridEl.clientHeight, k = cells.length;
+				var digits = 1;
+				for (var i = 0; i < metros.length; i++) {
+					digits = Math.max(digits, String(metros[i].length).length);
+				}
+				var labelRoom = panel.labels ? 0.72 : 0.86;
+				var barRoom = panel.bar ? 8 : 0;
+				var best = 1, bestSize = 0;
+				for (var cols = 1; cols <= k; cols++) {
+					var rows = Math.ceil(k / cols);
+					var cw = w / cols - 4, ch = h / rows - 4 - barRoom;
+					var size = Math.min(ch * labelRoom, (cw * 0.94) / (digits * 0.62));
+					if (size > bestSize) { bestSize = size; best = cols; }
+				}
+				gridEl.style.gridTemplateColumns = "repeat(" + best + ", 1fr)";
+				gridEl.style.gridTemplateRows = "repeat(" + Math.ceil(k / best) + ", 1fr)";
+				var px = Math.max(9, bestSize);
+				var labelPx = Math.max(8, Math.min(14, px * 0.2));
+				for (var j = 0; j < cells.length; j++) {
+					cells[j].num.style.fontSize = px + "px";
+					var lab = cells[j].el.querySelector(".label");
+					if (lab) lab.style.fontSize = labelPx + "px";
+				}
+			}
+
+			// -- painting ---------------------------------------------------
+
+			function paint(now) {
+				for (var i = 0; i < cells.length; i++) {
+					var c = cells[i], count = countOf(c.m, now);
+					var running = count != null;
+					c.el.classList.toggle("stopped", !running);
+					var shown = running ? count : 1;
+					if (shown !== c.shown) {
+						c.shown = shown;
+						c.num.textContent = String(shown);
+					}
+					// Recomputed every frame, not only on a count change, so an
+					// edit to the colour ranges shows up straight away.
+					var color = colorOf(c.m, shown);
+					if (color !== c.color) {
+						c.color = color;
+						// currentColor on the cell also tints the progress bar.
+						c.el.style.color = color;
+						c.num.style.color = color;
+					}
+					if (c.bar) c.bar.style.transform = "scaleX(" + (running ? progressOf(c.m, now) : 0) + ")";
+				}
+				if (runEl) runEl.textContent = metros.some(function (m) { return m.startedAt != null; }) ? "■" : "▶";
+			}
+
+			function frame() {
+				paint(Date.now());
+				requestAnimationFrame(frame);
+			}
+
+			// -- wiring -----------------------------------------------------
+
+			var bus = "BroadcastChannel" in window ? new BroadcastChannel(CHANNEL) : null;
+			if (bus) bus.onmessage = refresh;
+			// Fallback (and cross-window belt and braces): storage fires in every
+			// other window of the origin.
+			window.addEventListener("storage", function (e) {
+				if (e.key === STORAGE_KEY) refresh();
+			});
+			window.addEventListener("resize", layout);
+
+			runEl.addEventListener("click", function () {
+				if (!config || !metros.length) return;
+				var anyRunning = metros.some(function (m) { return m.startedAt != null; });
+				var now = Date.now();
+				for (var i = 0; i < metros.length; i++) {
+					metros[i].startedAt = anyRunning ? null : now;
+				}
+				save();
+				paint(now);
+			});
+
+			refresh();
+			requestAnimationFrame(frame);
+		</script>
+	</body>
+</html>

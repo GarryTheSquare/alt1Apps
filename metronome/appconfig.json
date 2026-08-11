@@ -1,0 +1,15 @@
+{
+	"appName": "Metronomes",
+	"description": "Visual metronomes — counters that loop 1 to N on a game-tick interval, shown in resizable panels over the game.",
+	"appUrl": "./index.html",
+	"configUrl": "./appconfig.json",
+	"iconUrl": "./icon.png",
+	"defaultWidth": 340,
+	"defaultHeight": 520,
+	"minWidth": 280,
+	"minHeight": 220,
+	"maxWidth": 800,
+	"maxHeight": 1400,
+	"requestHandlers": [],
+	"activators": []
+}
