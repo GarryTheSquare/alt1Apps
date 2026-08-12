@@ -13,6 +13,7 @@ nothing to download — install one and it stays up to date.
 | --- | --- | --- |
 | **[Archaeology Tracker](https://garrythesquare.github.io/alt1Apps/archaeology/)** | Archaeology training guide, artefact tracker, restoration materials and collection overview. | [Add to Alt1](alt1://addapp/https://garrythesquare.github.io/alt1Apps/archaeology/appconfig.json) |
 | **[Metronomes](https://garrythesquare.github.io/alt1Apps/metronome/)** | Visual metronomes — counters that loop 1 to N on a game-tick interval, shown in resizable panels over the game. | [Add to Alt1](alt1://addapp/https://garrythesquare.github.io/alt1Apps/metronome/appconfig.json) |
+| **[Nemi Forest](https://garrythesquare.github.io/alt1Apps/nemiforest/)** | Shows the image from the newest r/NemiForest post. | [Add to Alt1](alt1://addapp/https://garrythesquare.github.io/alt1Apps/nemiforest/appconfig.json) |
 | **[Ritual Materials](https://garrythesquare.github.io/alt1Apps/ritualcalc/)** | Necromancy ritual material calculator — inks, candles, focus objects, and the necroplasm rituals behind them. | [Add to Alt1](alt1://addapp/https://garrythesquare.github.io/alt1Apps/ritualcalc/appconfig.json) |
 | **[Thieving Tables](https://garrythesquare.github.io/alt1Apps/thieving/)** | Pickpocketing, stall and chest tables from the wiki, each with its full loot table. | [Add to Alt1](alt1://addapp/https://garrythesquare.github.io/alt1Apps/thieving/appconfig.json) |
 

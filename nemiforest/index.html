@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Nemi Forest</title>
+		<style>
+			html, body { margin: 0; background: #1b1b1b; color: #ddd;
+				font: 12px/1.4 system-ui, sans-serif; }
+			#output { display: flex; align-items: center; justify-content: center;
+				min-height: 100vh; }
+			#output img { max-width: 100%; max-height: 100vh; display: block; }
+			.msg { padding: 12px; text-align: center; }
+			.msg.err { color: #e59; }
+			.msg small { color: #888; }
+			a { color: #6cf; }
+			#bar { position: fixed; top: 0; right: 0; padding: 4px 6px;
+				font-size: 11px; opacity: 0.35; }
+			#bar:hover { opacity: 1; }
+			#addapp { position: fixed; bottom: 0; left: 0; right: 0;
+				padding: 4px 6px; background: #222; text-align: center; }
+			#addapp:empty { display: none; }
+		</style>
+	</head>
+	<body>
+		<div id="bar"><a id="refresh" href="#" title="Check for a newer post">↻ refresh</a></div>
+		<div id="output"></div>
+		<div id="addapp"></div>
+		<script src="./main.js"></script>
+	</body>
+</html>

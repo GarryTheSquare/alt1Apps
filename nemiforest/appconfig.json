@@ -1,0 +1,15 @@
+{
+	"appName": "Nemi Forest",
+	"description": "Shows the image from the newest r/NemiForest post.",
+	"appUrl": "./index.html",
+	"configUrl": "./appconfig.json",
+	"iconUrl": "./icon.png",
+	"defaultWidth": 320,
+	"defaultHeight": 320,
+	"minWidth": 150,
+	"minHeight": 120,
+	"maxWidth": 1200,
+	"maxHeight": 1200,
+	"requestHandlers": [],
+	"activators": []
+}
