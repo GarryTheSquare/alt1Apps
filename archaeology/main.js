@@ -13888,10 +13888,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-// The RuneMetrics proxy on SurfaceServer — same one dailyscape's Troll Invasion
-// page uses (live/scripts/runemetrics_proxy.py). Jagex sends no CORS headers,
-// so a browser can't read the profile directly. See README.md.
-const PROXY_BASE = "http://surfaceserver:8900";
 const STORAGE_KEY = "archaeology.tracker";
 const STATE_LABEL = { missing: "missing", damaged: "damaged", restored: "restored" };
 const STATE_MARK = { missing: "○", damaged: "◑", restored: "●" };
@@ -14241,6 +14237,14 @@ async function lookup() {
     // Unreachable in a public build — the UI that calls this is removed below.
     if (true)
         return;
+    // The RuneMetrics proxy on SurfaceServer — same one dailyscape's Troll
+    // Invasion page uses (live/scripts/runemetrics_proxy.py). Jagex sends no
+    // CORS headers, so a browser can't read the profile directly. See README.md.
+    // It lives in here rather than at module level on purpose: the build isn't
+    // minified, so a module-level const would ship the homelab hostname into the
+    // public bundle even with every caller dead.
+    // removed by dead control flow
+
     // removed by dead control flow
 
     // removed by dead control flow
