@@ -2,113 +2,103 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
-		<title>Metronomes</title>
+		<title>Metronome</title>
 		<style>
-			html, body { margin: 0; background: #1b1b1b; color: #ddd;
-				font: 12px/1.45 system-ui, sans-serif; }
-			a { color: #6cf; }
-			h1 { font-size: 13px; font-weight: 600; margin: 0; color: #e8b23a; }
-			h2 { font-size: 11px; font-weight: 600; margin: 10px 0 4px; color: #888;
-				text-transform: uppercase; letter-spacing: .04em; }
+			html, body { margin: 0; height: 100%; overflow: hidden;
+				font: 12px/1.4 system-ui, sans-serif; color: #ddd; background: transparent; }
+			body { display: flex; flex-direction: column; }
 
-			#bar { display: flex; align-items: center; gap: 6px;
-				padding: 6px; background: #222; border-bottom: 1px solid #333;
-				position: sticky; top: 0; z-index: 2; }
-			#bar .spacer { flex: 1; }
+			/* Own layer, so its translucency never fades the number on top. */
+			#bg { position: fixed; inset: 0; z-index: -1; background: rgba(0,0,0,.35); }
 
-			main { padding: 0 6px 12px; }
+			/* Only in the way while the pointer is actually over the window. */
+			#head { position: absolute; left: 0; right: 0; top: 0; z-index: 4;
+				display: flex; align-items: center; gap: 4px; padding: 2px 4px;
+				background: rgba(20,20,20,.85); border-bottom: 1px solid #333;
+				opacity: 0; transition: opacity .12s; pointer-events: none;
+				-webkit-app-region: drag; }
+			body:hover #head, body.settings #head { opacity: 1; pointer-events: auto; }
+			#head .spacer { flex: 1; }
 
-			select, input { background: #2a2a2a; color: #ddd; font: inherit;
+			button { -webkit-app-region: no-drag;
+				background: #2a2a2a; color: #ddd; border: 1px solid #3a3a3a;
+				border-radius: 3px; padding: 1px 7px; font: inherit; cursor: pointer; }
+			button:hover { background: #343434; }
+			button.warn:hover { border-color: #a44; color: #e88; }
+
+			#stage { flex: 1 1 auto; display: flex; flex-direction: column;
+				align-items: center; justify-content: center;
+				min-width: 0; min-height: 0; overflow: hidden; }
+			#num { font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums;
+				text-shadow: 0 0 3px #000, 0 1px 2px #000; }
+			#stage.stopped #num { opacity: .3; }
+			#bar { width: 84%; height: 2px; margin-top: 4px; background: #ffffff22;
+				border-radius: 1px; overflow: hidden; flex: 0 0 auto; }
+			#bar i { display: block; height: 100%; background: currentColor;
+				transform-origin: left center; }
+
+			/* Fold-out settings — covers the window, which is small by design. */
+			#settings { position: absolute; inset: 0; z-index: 3; overflow: auto;
+				background: #1b1b1b; padding: 22px 8px 8px; }
+			.field { display: flex; align-items: center; gap: 6px; margin: 5px 0; }
+			.field > label { flex: 0 0 48px; color: #999; }
+			input { background: #2a2a2a; color: #ddd; font: inherit;
 				border: 1px solid #3a3a3a; border-radius: 3px; padding: 2px 4px; min-width: 0; }
-			input[type=number] { width: 100%; text-align: right; }
-			input[type=checkbox] { accent-color: #e8b23a; width: 13px; height: 13px;
-				margin: 0; vertical-align: -2px; }
+			input[type=number] { flex: 0 0 56px; text-align: right; }
 			input[type=color] { padding: 0; width: 24px; height: 19px; flex: 0 0 24px;
 				background: none; border: 1px solid #3a3a3a; cursor: pointer; }
-			input[type=range] { accent-color: #e8b23a; padding: 0; }
-			input.hex { width: 66px; font-family: ui-monospace, monospace; }
-			button { background: #2a2a2a; color: #ddd; border: 1px solid #3a3a3a;
-				border-radius: 3px; padding: 2px 7px; font: inherit; cursor: pointer; }
-			button:hover { background: #343434; }
-			button.on { border-color: #e8b23a; color: #e8b23a; }
-			button.warn:hover { border-color: #a44; color: #e88; }
-			button.add { width: 100%; margin: 4px 0 2px; color: #999; }
-
-			/* label + control rows */
-			.field { display: flex; align-items: center; gap: 6px; margin: 4px 0; }
-			.field > label { flex: 0 0 76px; color: #999; }
-			.field > input, .field > select { flex: 1; }
-			.field .pair { flex: 1; display: flex; align-items: center; gap: 5px; }
-			.field .pair > input[type=number] { flex: 0 0 56px; }
-			.field .unit { color: #777; flex: 1; }
-
-			/* metronome cards */
-			details.card { border: 1px solid #303030; border-radius: 3px;
-				margin: 4px 0; background: #1f1f1f; }
-			details.card[open] { border-color: #3a3a3a; }
-			details.card > summary { padding: 4px 6px; cursor: pointer; user-select: none;
-				display: flex; align-items: center; gap: 6px; list-style: none; }
-			details.card > summary::-webkit-details-marker { display: none; }
-			details.card > summary:hover { background: #262626; }
-			details.card > .body { padding: 2px 6px 7px; border-top: 1px solid #2b2b2b; }
-
-			.preview { flex: 0 0 30px; text-align: center; font-weight: 600; font-size: 15px;
-				font-variant-numeric: tabular-nums; background: #151515; border-radius: 3px;
-				border: 1px solid #2b2b2b; padding: 1px 0; }
-			.preview.off { color: #555 !important; }
-			.cname { flex: 1 1 auto; min-width: 0; overflow: hidden;
-				text-overflow: ellipsis; white-space: nowrap; }
-			.csub { flex: 0 0 auto; color: #777; font-variant-numeric: tabular-nums; }
-
-			/* colour ranges */
-			.ranges { margin: 3px 0 0; }
-			.range { display: flex; align-items: center; gap: 5px; margin: 3px 0; }
-			.range input[type=number] { flex: 0 0 44px; }
-			.range .dash { color: #777; }
-			.range .rdel { flex: 0 0 auto; padding: 1px 5px; color: #644; }
-			.range .rdel:hover { color: #e59; }
-			.range .bad input[type=number] { border-color: #a44; }
-
-			/* panel rows */
-			.panel { border: 1px solid #303030; border-radius: 3px; background: #1f1f1f;
-				margin: 4px 0; padding: 4px 6px; }
-			.panel .top { display: flex; align-items: center; gap: 5px; }
-			.panel .top input.pname { flex: 1 1 auto; }
-			.panel .opts { display: flex; align-items: center; gap: 8px; margin-top: 4px;
-				color: #999; flex-wrap: wrap; }
-			.panel .opts label { white-space: nowrap; }
-			.panel .opts input[type=range] { flex: 1 1 60px; min-width: 50px; }
-			.panel .count { color: #777; white-space: nowrap; flex: 0 0 auto; }
-
-			.hint { color: #777; margin: 6px 0 0; }
-			#addapp { color: #777; padding: 6px; }
+			input.hex { flex: 0 0 66px; font-family: ui-monospace, monospace; }
+			.unit { color: #777; flex: 1 1 auto; }
+			button.bind { flex: 1 1 auto; text-align: left; }
+			button.bind.arming { border-color: #e8b23a; color: #e8b23a; }
+			.note { color: #777; margin: 7px 0 0; }
+			#settings .actions { display: flex; gap: 6px; margin-top: 10px;
+				padding-top: 8px; border-top: 1px solid #2b2b2b; }
+			#addapp { color: #777; padding: 8px 0 0; }
+			#addapp a { color: #6cf; }
 		</style>
 	</head>
 	<body>
-		<div id="bar">
-			<h1>Metronomes</h1>
+		<div id="bg"></div>
+		<div id="head">
+			<button id="run" title="Start / stop">▶</button>
 			<span class="spacer"></span>
-			<button id="startall" title="Start every metronome from this moment, in sync">▶ all</button>
-			<button id="stopall" title="Stop every metronome">■ all</button>
+			<button id="gear" title="Settings">⚙</button>
 		</div>
 
-		<main>
-			<h2>Panels</h2>
-			<div id="panels"></div>
-			<button class="add" id="addpanel">+ panel</button>
+		<div id="stage"><div id="num">1</div><div id="bar"><i></i></div></div>
 
-			<h2>Metronomes</h2>
-			<div id="list"></div>
-			<button class="add" id="addmetro">+ metronome</button>
-
-			<p class="hint">
-				One tick is 600&nbsp;ms. Each metronome counts <b>1 → length</b> and loops.
-				Colour ranges are matched top to bottom, first match wins; counts matching
-				none use the base colour.
-			</p>
-		</main>
-
-		<div id="addapp"></div>
+		<div id="settings" hidden>
+			<div class="field">
+				<label>Length</label>
+				<input type="number" id="length" min="2" step="1" value="4" />
+				<span class="unit" id="u-length">counts 1 → 4, then loops</span>
+			</div>
+			<div class="field">
+				<label>Every</label>
+				<input type="number" id="ticks" min="1" step="1" value="1" />
+				<span class="unit" id="u-ticks">ticks</span>
+			</div>
+			<div class="field">
+				<label>Colour</label>
+				<input type="color" id="color" value="#ffffff" />
+				<input type="text" class="hex" id="colorhex" value="#ffffff" spellcheck="false" />
+			</div>
+			<div class="field">
+				<label>Reset</label>
+				<button id="bind" class="bind" title="Press this key to restart the count at 1">click, then press a key</button>
+				<button id="unbind" class="warn" title="Clear the reset key" hidden>✕</button>
+			</div>
+			<p class="note" id="keynote">Restarts the count at 1. Modifiers count, so
+				<b>ctrl + z</b> and <b>z</b> are different keys. Only while this window has
+				focus — Alt1 gives apps no global hotkeys.</p>
+			<div class="actions">
+				<button id="new" title="Open another metronome in its own window">+ metronome</button>
+				<span class="spacer" style="flex:1"></span>
+				<button id="del" class="warn" title="Delete this metronome and close its window" hidden>delete</button>
+			</div>
+			<div id="addapp"></div>
+		</div>
 		<script src="./main.js"></script>
 	</body>
 </html>

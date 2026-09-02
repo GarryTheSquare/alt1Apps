@@ -14040,6 +14040,35 @@ function renderTraining() {
     view("training").querySelector(".step.here")?.scrollIntoView({ block: "nearest" });
 }
 // --- Artefacts --------------------------------------------------------------
+/**
+ * The line above the list: how the copies you're tracking are split, and the
+ * restoration XP still sitting in the bank. The XP counts every damaged copy,
+ * spares included — the same set the Materials tab's Held column buys for.
+ */
+function artefactSummary() {
+    const all = (0,_state__WEBPACK_IMPORTED_MODULE_7__.artefactsUpTo)(level());
+    const counts = { missing: 0, damaged: 0, restored: 0 };
+    let copies = 0;
+    let spares = 0;
+    let damagedXp = 0;
+    for (const [name, a] of all) {
+        const c = (0,_state__WEBPACK_IMPORTED_MODULE_7__.countsOf)(store, name, a.needed);
+        counts.restored += c.restored;
+        counts.damaged += c.damaged;
+        counts.missing += c.missing;
+        copies += a.needed;
+        const extra = (0,_state__WEBPACK_IMPORTED_MODULE_7__.extraOf)(store, name);
+        spares += extra;
+        damagedXp += (c.damaged + extra) * a.xp;
+    }
+    const damaged = counts.damaged + spares;
+    const xp = damaged
+        ? ` Restoring the ${damaged} damaged cop${damaged === 1 ? "y" : "ies"} you hold${spares ? ` (${spares} spare${spares === 1 ? "" : "s"} included)` : ""} would give <strong>${num(damagedXp)}</strong> Archaeology XP.`
+        : "";
+    return `${counts.restored} restored, ${counts.damaged} damaged, ${counts.missing} missing —
+		${copies} copies of ${all.length} artefacts at level ${level()}.
+		One pip per copy; click to change.${xp}`;
+}
 function renderArtefacts() {
     const needle = search.toLowerCase();
     const all = (0,_state__WEBPACK_IMPORTED_MODULE_7__.artefactsUpTo)(level());
@@ -14059,15 +14088,6 @@ function renderArtefacts() {
             return damaged > 0;
         return counts[filter] > 0;
     });
-    const counts = { missing: 0, damaged: 0, restored: 0 };
-    let copies = 0;
-    for (const [name, a] of all) {
-        const c = (0,_state__WEBPACK_IMPORTED_MODULE_7__.countsOf)(store, name, a.needed);
-        counts.restored += c.restored;
-        counts.damaged += c.damaged;
-        counts.missing += c.missing;
-        copies += a.needed;
-    }
     // Grouped by dig site: that's the order you actually work through them in.
     const bySite = new Map();
     for (const entry of shown) {
@@ -14092,9 +14112,7 @@ function renderArtefacts() {
 				<option value="restored">Restored</option>
 			</select>
 		</div>
-		<p class="muted">${counts.restored} restored, ${counts.damaged} damaged,
-			${counts.missing} missing — ${copies} copies of ${all.length} artefacts
-			at level ${level()}. One pip per copy; click to change.</p>` +
+		<p class="muted" id="art-summary">${artefactSummary()}</p>` +
             (groups || `<div class="empty">Nothing matches.</div>`);
     view("artefacts").querySelector("#art-filter").value = filter;
 }
@@ -14438,13 +14456,16 @@ view("view").addEventListener("input", e => {
         save();
     }
     else if (target.dataset.extra) {
-        // Deliberately no re-render: nothing else on this tab reads the spare
-        // count, and rebuilding would eat the caret (or drop the row under the
-        // "Not restored" filter) while you're still typing into it.
+        // Deliberately no full re-render: rebuilding would eat the caret (or drop
+        // the row under the "Not restored" filter) while you're still typing into
+        // it. The summary line does read the spare count, so refresh just that.
         const name = target.dataset.extra;
         target.classList.toggle("some", Number(target.value) > 0);
         store.artefacts[name] = (0,_state__WEBPACK_IMPORTED_MODULE_7__.setExtra)(store, name, Number(target.value));
         save();
+        const summary = view("artefacts").querySelector("#art-summary");
+        if (summary)
+            summary.innerHTML = artefactSummary();
     }
 });
 // Register with Alt1 (enables the "add app" button).

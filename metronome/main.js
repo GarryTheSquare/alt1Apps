@@ -44,17 +44,6 @@ module.exports = __webpack_require__.p + "metronome/index.html";
 
 /***/ },
 
-/***/ "./metronome/panel.html"
-/*!******************************!*\
-  !*** ./metronome/panel.html ***!
-  \******************************/
-(module, __unused_webpack_exports, __webpack_require__) {
-
-"use strict";
-module.exports = __webpack_require__.p + "metronome/panel.html";
-
-/***/ },
-
 /***/ "canvas"
 /*!*************************!*\
   !*** external "canvas" ***!
@@ -2384,20 +2373,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var alt1__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! alt1 */ "../node_modules/alt1/dist/base/index.js");
 /* harmony import */ var alt1__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(alt1__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _index_html__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./index.html */ "./metronome/index.html");
-/* harmony import */ var _panel_html__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./panel.html */ "./metronome/panel.html");
-/* harmony import */ var _appconfig_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./appconfig.json */ "./metronome/appconfig.json");
-/* harmony import */ var _icon_png__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./icon.png */ "./metronome/icon.png");
-// Visual Metronomes — configurable 1..N counters for timing RS rotations.
+/* harmony import */ var _appconfig_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./appconfig.json */ "./metronome/appconfig.json");
+/* harmony import */ var _icon_png__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./icon.png */ "./metronome/icon.png");
+// Visual Metronome — a 1..N counter for timing RS rotations.
 //
-// This page is the control panel: it only edits configuration. The counting
-// itself happens in `panel.html`, opened with window.open() so it becomes its
-// own Alt1 window that floats over the game and can be moved/resized freely.
+// One window is one metronome: a big number that counts 1 → length on a
+// game-tick interval and loops. The ⚙ button folds out its settings; the
+// "+ metronome" button in there opens this same page again in its own window
+// with a different metronome id, so extra metronomes are extra Alt1 windows
+// that float over the game and are moved and resized independently.
 //
 // There is no clock message passing between the windows. Every metronome stores
-// the epoch millisecond it was started at, and each window derives the current
-// count from `Date.now()` (see `countOf` below, mirrored in panel.html). Two
-// windows can therefore never drift apart, and a panel reopened mid-run picks up
-// exactly where the others are.
+// the epoch millisecond it was started at and each window derives the current
+// count from `Date.now()`, so windows cannot drift apart and a slow frame is a
+// dropped repaint rather than a lost beat.
 //
 // No screen capture or overlay, so this app needs no Alt1 permissions; it just
 // registers for the "add app" flow.
@@ -2405,12 +2394,59 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
 const STORAGE_KEY = "metronome.config";
 /** One RuneScape game tick. */
 const TICK_MS = 600;
-/** Panels listen on this for config changes; localStorage is the actual store. */
+/** Windows tell each other about config changes here; localStorage is the store. */
 const CHANNEL = "metronome.sync";
+/** id of the metronome the app's own window owns, as opposed to spawned ones. */
+const PRIMARY = "main";
+/** Reset binding a fresh metronome starts with. See `Metronome.resetKey`. */
+const DEFAULT_RESET = "Ctrl+KeyZ";
+// ---------------------------------------------------------------------------
+// State
+// ---------------------------------------------------------------------------
+const id = new URLSearchParams(location.search).get("m") || PRIMARY;
+function load() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        const cfg = raw ? JSON.parse(raw) : null;
+        if (cfg && Array.isArray(cfg.metronomes)) {
+            // Drop records written by the old panel-based version: they belonged
+            // to a panel window that no longer exists, so nothing can reach them.
+            const metronomes = cfg.metronomes.filter(m => !("panel" in m));
+            // Records predating the reset key get the default; an explicit null
+            // is a binding the user cleared, and stays cleared.
+            for (const m of metronomes)
+                if (m.resetKey === undefined)
+                    m.resetKey = DEFAULT_RESET;
+            return { metronomes };
+        }
+    }
+    catch (e) {
+        // corrupt or unavailable storage — start over
+    }
+    return { metronomes: [] };
+}
+let config = load();
+const bus = "BroadcastChannel" in window ? new BroadcastChannel(CHANNEL) : null;
+function save() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+    // Other windows also watch the `storage` event, which doesn't fire in the
+    // window that wrote it — the channel is what makes them repaint at once.
+    bus?.postMessage("update");
+}
+/** This window's metronome, created with the standard values on first open. */
+function mine() {
+    let m = config.metronomes.find(x => x.id === id);
+    if (!m) {
+        m = { id, length: 4, ticks: 1, color: "#ffffff", resetKey: DEFAULT_RESET, startedAt: Date.now() };
+        config.metronomes.push(m);
+        save();
+    }
+    return m;
+}
+let metro = mine();
 // ---------------------------------------------------------------------------
 // Counting
 // ---------------------------------------------------------------------------
@@ -2418,502 +2454,261 @@ const CHANNEL = "metronome.sync";
 function countOf(m, now) {
     if (m.startedAt == null)
         return null;
-    const period = m.ticks * TICK_MS;
-    const step = Math.floor((now - m.startedAt) / period);
-    // JS % keeps the sign, so normalise — startedAt can sit in the future by a
-    // few ms after a "start all".
+    const step = Math.floor((now - m.startedAt) / (m.ticks * TICK_MS));
+    // JS % keeps the sign, so normalise — startedAt can sit a few ms ahead.
     return ((step % m.length) + m.length) % m.length + 1;
 }
-/** Colour for a given count: first matching range, else the base colour. */
-function colorOf(m, count) {
-    for (const r of m.ranges) {
-        if (count >= r.from && count <= r.to)
-            return r.color;
+/** 0..1 through the current count — drives the progress bar. */
+function progressOf(m, now) {
+    if (m.startedAt == null)
+        return 0;
+    const period = m.ticks * TICK_MS;
+    const into = (now - m.startedAt) % period;
+    return (into < 0 ? into + period : into) / period;
+}
+// ---------------------------------------------------------------------------
+// Display
+// ---------------------------------------------------------------------------
+const el = (sel) => document.getElementById(sel);
+const stageEl = el("stage");
+const numEl = el("num");
+const barEl = stageEl.querySelector("#bar i");
+const runEl = el("run");
+const settingsEl = el("settings");
+let shown = null;
+let shownColor = "";
+/** Size the digits to the window; redone on every resize. */
+function layout() {
+    const w = stageEl.clientWidth, h = stageEl.clientHeight;
+    const digits = String(metro.length).length;
+    const size = Math.max(9, Math.min(h * 0.86 - 8, (w * 0.94) / (digits * 0.62)));
+    numEl.style.fontSize = size + "px";
+}
+function paint(now) {
+    const count = countOf(metro, now);
+    const running = count != null;
+    stageEl.classList.toggle("stopped", !running);
+    const next = running ? count : 1;
+    if (next !== shown) {
+        shown = next;
+        numEl.textContent = String(next);
     }
-    return m.color;
-}
-// ---------------------------------------------------------------------------
-// State
-// ---------------------------------------------------------------------------
-const uid = (p) => p + Date.now().toString(36) + Math.floor(Math.random() * 1e4).toString(36);
-function defaults() {
-    const panel = { id: uid("p"), name: "Panel 1", bg: "#000000", opacity: 70, labels: true, bar: true };
-    return {
-        panels: [panel],
-        metronomes: [{
-                id: uid("m"), name: "Metronome", length: 4, ticks: 1,
-                color: "#ffffff", ranges: [], panel: panel.id, startedAt: null
-            }]
-    };
-}
-let config = load();
-function load() {
-    try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (raw) {
-            const cfg = JSON.parse(raw);
-            if (cfg.panels?.length && cfg.metronomes)
-                return cfg;
-        }
+    if (metro.color !== shownColor) {
+        shownColor = metro.color;
+        // currentColor on the stage also tints the progress bar.
+        stageEl.style.color = metro.color;
+        numEl.style.color = metro.color;
     }
-    catch (e) {
-        // corrupt or unavailable storage — fall through to defaults
-    }
-    return defaults();
+    barEl.style.transform = `scaleX(${running ? progressOf(metro, now) : 0})`;
+    runEl.textContent = running ? "■" : "▶";
 }
-const bus = "BroadcastChannel" in window ? new BroadcastChannel(CHANNEL) : null;
-function save() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-    // Panels also watch the `storage` event, which doesn't fire in the window
-    // that wrote it — the channel is what makes them repaint immediately.
-    bus?.postMessage("update");
+function frame() {
+    paint(Date.now());
+    requestAnimationFrame(frame);
 }
-const metro = (id) => config.metronomes.find(m => m.id === id);
-const panelOf = (id) => config.panels.find(p => p.id === id);
-const inPanel = (id) => config.metronomes.filter(m => m.panel === id).length;
+window.addEventListener("resize", layout);
 // ---------------------------------------------------------------------------
-// Panel windows
+// Settings
 // ---------------------------------------------------------------------------
-// Handles to panel windows we opened, so clicking "open" again focuses the
-// existing one instead of stacking a second copy. Alt1 (and browsers) key
-// window.open on the name too, but a live handle lets us close and re-target.
-const opened = new Map();
-function openPanel(id) {
-    const existing = opened.get(id);
-    if (existing && !existing.closed) {
-        existing.focus();
-        return;
-    }
-    const url = new URL(`./panel.html?panel=${encodeURIComponent(id)}`, document.location.href).href;
-    const win = window.open(url, `metronome-${id}`, "width=220,height=200,resizable=yes,scrollbars=no");
-    if (win)
-        opened.set(id, win);
+const lengthEl = el("length");
+const ticksEl = el("ticks");
+const colorEl = el("color");
+const hexEl = el("colorhex");
+const bindEl = el("bind");
+const unbindEl = el("unbind");
+/** Put the stored values back in the form and refresh its derived text. */
+function fillSettings() {
+    lengthEl.value = String(metro.length);
+    ticksEl.value = String(metro.ticks);
+    colorEl.value = metro.color;
+    hexEl.value = metro.color;
+    bindEl.textContent = metro.resetKey ? keyLabel(metro.resetKey) : "click, then press a key";
+    bindEl.classList.remove("arming");
+    unbindEl.hidden = !metro.resetKey;
+    el("u-length").textContent = `counts 1 → ${metro.length}, then loops`;
+    el("u-ticks").textContent =
+        `tick${metro.ticks === 1 ? "" : "s"} — ${(metro.ticks * TICK_MS / 1000).toFixed(1)}s per count, ` +
+            `${(metro.ticks * metro.length * TICK_MS / 1000).toFixed(1)}s per loop`;
 }
-function closePanel(id) {
-    const win = opened.get(id);
-    if (win && !win.closed)
-        win.close();
-    opened.delete(id);
+/** "Ctrl+KeyZ" → "Ctrl + Z" — what the bind button shows. */
+function keyLabel(binding) {
+    const parts = binding.split("+");
+    const code = parts.pop()
+        .replace(/^Key/, "")
+        .replace(/^Digit/, "")
+        .replace(/^Numpad/, "Numpad ")
+        .replace(/^Arrow/, "Arrow ")
+        .replace(/([a-z])([A-Z])/g, "$1 $2");
+    return [...parts, code].join(" + ");
 }
-// ---------------------------------------------------------------------------
-// Rendering
-// ---------------------------------------------------------------------------
-const panelsEl = document.getElementById("panels");
-const listEl = document.getElementById("list");
-const esc = (s) => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-function renderPanels() {
-    panelsEl.innerHTML = config.panels.map(p => {
-        const n = inPanel(p.id);
-        return `
-		<div class="panel" data-pid="${p.id}">
-			<div class="top">
-				<input class="pname" type="text" value="${esc(p.name)}" spellcheck="false" />
-				<span class="count">${n} metro${n === 1 ? "" : "s"}</span>
-				<button data-act="open" title="Open this panel over the game">open</button>
-				<button data-act="delpanel" class="warn" title="Delete panel${n ? " (its metronomes move to the first panel)" : ""}"${config.panels.length < 2 ? " disabled" : ""}>✕</button>
-			</div>
-			<div class="opts">
-				<label><input type="checkbox" data-act="labels"${p.labels ? " checked" : ""} /> names</label>
-				<label><input type="checkbox" data-act="bar"${p.bar ? " checked" : ""} /> bar</label>
-				<label>bg <input type="color" data-act="bg" value="${p.bg}" /></label>
-				<input type="range" data-act="opacity" min="0" max="100" value="${p.opacity}" title="Background opacity" />
-				<span class="count opacityval">${p.opacity}%</span>
-			</div>
-		</div>`;
-    }).join("");
+/** The binding a keydown stands for: modifiers held, in a fixed order, then
+ *  the key's own code. Pure modifier presses have no binding of their own. */
+function bindingOf(e) {
+    if (["Control", "Shift", "Alt", "Meta"].includes(e.key))
+        return null;
+    const mods = [];
+    if (e.ctrlKey)
+        mods.push("Ctrl");
+    if (e.shiftKey)
+        mods.push("Shift");
+    if (e.altKey)
+        mods.push("Alt");
+    if (e.metaKey)
+        mods.push("Meta");
+    return [...mods, e.code].join("+");
 }
-const timing = (m) => `tick${m.ticks === 1 ? "" : "s"} = ${(m.ticks * TICK_MS / 1000).toFixed(1)}s per count, ` +
-    `${(m.ticks * TICK_MS * m.length / 1000).toFixed(1)}s per loop`;
-function renderMetros() {
-    // <details> loses its open state on re-render; remember which were expanded.
-    const open = new Set(Array.from(listEl.querySelectorAll("details.card[open]"))
-        .map(d => d.dataset.mid));
-    const options = (sel) => config.panels
-        .map(p => `<option value="${p.id}"${p.id === sel ? " selected" : ""}>${esc(p.name)}</option>`).join("");
-    listEl.innerHTML = config.metronomes.map(m => `
-		<details class="card" data-mid="${m.id}">
-			<summary>
-				<span class="preview">–</span>
-				<span class="cname">${esc(m.name) || "<i>unnamed</i>"}</span>
-				<span class="csub">1–${m.length} · ${m.ticks}t</span>
-				<button data-act="run" class="${m.startedAt != null ? "on" : ""}" title="${m.startedAt != null ? "Stop" : "Start"}">${m.startedAt != null ? "■" : "▶"}</button>
-			</summary>
-			<div class="body">
-				<div class="field">
-					<label>Name</label>
-					<input type="text" data-act="name" value="${esc(m.name)}" spellcheck="false" />
-				</div>
-				<div class="field">
-					<label>Length</label>
-					<div class="pair">
-						<input type="number" data-act="length" min="2" step="1" value="${m.length}" />
-						<span class="unit u-length">counts 1 → ${m.length}, then loops</span>
-					</div>
-				</div>
-				<div class="field">
-					<label>Every</label>
-					<div class="pair">
-						<input type="number" data-act="ticks" min="1" step="1" value="${m.ticks}" />
-						<span class="unit u-ticks">${timing(m)}</span>
-					</div>
-				</div>
-				<div class="field">
-					<label>Panel</label>
-					<select data-act="panel">${options(m.panel)}</select>
-				</div>
-				<div class="field">
-					<label>Colour</label>
-					<div class="pair">
-						<input type="color" data-act="color" value="${m.color}" />
-						<input type="text" class="hex" data-act="colorhex" value="${m.color}" spellcheck="false" />
-						<span class="unit">counts no range covers</span>
-					</div>
-				</div>
-				<div class="ranges">${m.ranges.map((r, i) => `
-					<div class="range" data-ri="${i}">
-						<input type="number" data-act="rfrom" min="1" max="${m.length}" step="1" value="${r.from}" />
-						<span class="dash">–</span>
-						<input type="number" data-act="rto" min="1" max="${m.length}" step="1" value="${r.to}" />
-						<input type="color" data-act="rcolor" value="${r.color}" />
-						<input type="text" class="hex" data-act="rhex" value="${r.color}" spellcheck="false" />
-						<button class="rdel" data-act="rdel" title="Remove this colour range">✕</button>
-					</div>`).join("")}
-				</div>
-				<div class="field">
-					<button data-act="addrange">+ colour range</button>
-					<button data-act="sync" title="Restart this metronome's loop at 1, now">restart at 1</button>
-					<span class="spacer" style="flex:1"></span>
-					<button data-act="del" class="warn" title="Delete this metronome">delete</button>
-				</div>
-			</div>
-		</details>`).join("");
-    for (const id of open) {
-        const el = listEl.querySelector(`details.card[data-mid="${id}"]`);
-        if (el)
-            el.open = true;
-    }
-}
-function render() {
-    renderPanels();
-    renderMetros();
-    tickPreviews();
-}
-/** Update one card's derived text and clamped values without rebuilding it —
- *  a rebuild would drop the focus of whoever is tabbing through the fields. */
-function refreshCard(m) {
-    const card = listEl.querySelector(`details.card[data-mid="${m.id}"]`);
-    if (!card)
-        return;
-    const set = (sel, text) => {
-        const el = card.querySelector(sel);
-        if (el)
-            el.textContent = text;
-    };
-    set(".csub", `1–${m.length} · ${m.ticks}t`);
-    set(".u-length", `counts 1 → ${m.length}, then loops`);
-    set(".u-ticks", timing(m));
-    card.querySelector("[data-act=length]").value = String(m.length);
-    card.querySelector("[data-act=ticks]").value = String(m.ticks);
-    card.querySelectorAll(".range").forEach((row, i) => {
-        const r = m.ranges[i];
-        if (!r)
-            return;
-        for (const [act, value] of [["rfrom", r.from], ["rto", r.to]]) {
-            const input = row.querySelector(`[data-act=${act}]`);
-            input.max = String(m.length);
-            input.value = String(value);
-        }
-    });
-}
-/** Live count next to each metronome's name, so colours can be checked here. */
-function tickPreviews() {
-    const now = Date.now();
-    for (const m of config.metronomes) {
-        const el = listEl.querySelector(`details.card[data-mid="${m.id}"] .preview`);
-        if (!el)
-            continue;
-        const count = countOf(m, now);
-        el.classList.toggle("off", count == null);
-        el.textContent = count == null ? "–" : String(count);
-        el.style.color = count == null ? "" : colorOf(m, count);
-    }
-}
-setInterval(tickPreviews, 60);
-// ---------------------------------------------------------------------------
-// Editing — metronomes
-// ---------------------------------------------------------------------------
+el("gear").addEventListener("click", () => {
+    const open = settingsEl.hidden;
+    if (open)
+        fillSettings();
+    settingsEl.hidden = !open;
+    // Keep the header up while the settings are open, so ⚙ can close them.
+    document.body.classList.toggle("settings", open);
+});
 /** Whole number >= min, falling back to the current value on garbage input. */
 function whole(raw, min, fallback) {
     const n = Math.floor(Number(raw));
     return Number.isFinite(n) && n >= min ? n : fallback;
 }
 const isHex = (s) => /^#[0-9a-f]{6}$/i.test(s);
-function metroOf(el) {
-    const card = el.closest("details.card");
-    return card ? metro(card.dataset.mid) : null;
-}
-function rangeOf(el) {
-    const m = metroOf(el);
-    const row = el.closest(".range");
-    if (!m || !row)
-        return null;
-    return { m, r: m.ranges[Number(row.dataset.ri)] };
-}
-// `input` for anything that should apply while typing, `change` for the numeric
-// fields — those get clamped, and clamping mid-keystroke fights the user.
-listEl.addEventListener("input", e => {
-    const el = e.target;
-    const act = el.dataset.act;
-    const m = metroOf(el);
-    if (!m || !act)
-        return;
-    const value = el.value;
-    switch (act) {
-        case "name":
-            m.name = value;
-            el.closest("details").querySelector(".cname").textContent = value || "unnamed";
-            break;
-        case "color":
-            m.color = value;
-            syncHex(el, value);
-            break;
-        case "colorhex":
-            if (!isHex(value))
-                return;
-            m.color = value.toLowerCase();
-            syncPicker(el, m.color);
-            break;
-        case "rcolor": {
-            const hit = rangeOf(el);
-            if (!hit)
-                return;
-            hit.r.color = value;
-            syncHex(el, value);
-            break;
-        }
-        case "rhex": {
-            const hit = rangeOf(el);
-            if (!hit || !isHex(value))
-                return;
-            hit.r.color = value.toLowerCase();
-            syncPicker(el, hit.r.color);
-            break;
-        }
-        default: return;
-    }
+// `change` for the numbers — they get clamped, and clamping mid-keystroke
+// fights the user; `input` for the colour, which should apply while dragging.
+lengthEl.addEventListener("change", () => {
+    metro.length = whole(lengthEl.value, 2, metro.length);
+    save();
+    fillSettings();
+    layout();
+});
+ticksEl.addEventListener("change", () => {
+    metro.ticks = whole(ticksEl.value, 1, metro.ticks);
+    save();
+    fillSettings();
+});
+colorEl.addEventListener("input", () => {
+    metro.color = colorEl.value;
+    hexEl.value = metro.color;
     save();
 });
-/** Keep a colour picker and its hex box showing the same value. */
-function syncHex(picker, value) {
-    const hex = picker.parentElement.querySelector("input.hex");
-    if (hex)
-        hex.value = value;
-}
-function syncPicker(hex, value) {
-    const picker = hex.parentElement.querySelector("input[type=color]");
-    if (picker)
-        picker.value = value;
-}
-listEl.addEventListener("change", e => {
-    const el = e.target;
-    const act = el.dataset.act;
-    const m = metroOf(el);
-    if (!m || !act)
+hexEl.addEventListener("input", () => {
+    if (!isHex(hexEl.value))
         return;
-    const value = el.value;
-    switch (act) {
-        case "length":
-            // >= 2: a one-count metronome would never visibly change.
-            m.length = whole(value, 2, m.length);
-            // Ranges outside the new length can never match — pull them in.
-            for (const r of m.ranges) {
-                r.from = Math.min(r.from, m.length);
-                r.to = Math.min(r.to, m.length);
-            }
-            break;
-        case "ticks":
-            m.ticks = whole(value, 1, m.ticks);
-            break;
-        case "panel":
-            m.panel = value;
-            save();
-            // Only the "n metros" counts change; the card itself is untouched.
-            renderPanels();
-            return;
-        case "rfrom":
-        case "rto": {
-            const hit = rangeOf(el);
-            if (!hit)
-                return;
-            const n = Math.min(whole(value, 1, act === "rfrom" ? hit.r.from : hit.r.to), m.length);
-            if (act === "rfrom") {
-                hit.r.from = n;
-                if (hit.r.to < n)
-                    hit.r.to = n;
-            }
-            else {
-                hit.r.to = n;
-                if (hit.r.from > n)
-                    hit.r.from = n;
-            }
-            break;
-        }
-        default: return;
-    }
+    metro.color = hexEl.value.toLowerCase();
+    colorEl.value = metro.color;
     save();
-    refreshCard(m);
-    tickPreviews();
-});
-listEl.addEventListener("click", e => {
-    const el = e.target.closest("button");
-    if (!el)
-        return;
-    const act = el.dataset.act;
-    const m = metroOf(el);
-    if (!m || !act)
-        return;
-    // Buttons live inside <summary>; without this the card would toggle too.
-    e.preventDefault();
-    e.stopPropagation();
-    switch (act) {
-        case "run":
-            m.startedAt = m.startedAt == null ? Date.now() : null;
-            break;
-        case "sync":
-            m.startedAt = Date.now();
-            break;
-        case "addrange": {
-            const last = m.ranges[m.ranges.length - 1];
-            const from = last ? Math.min(last.to + 1, m.length) : 1;
-            m.ranges.push({ from, to: m.length, color: "#e8b23a" });
-            break;
-        }
-        case "rdel": {
-            const row = el.closest(".range");
-            m.ranges.splice(Number(row.dataset.ri), 1);
-            break;
-        }
-        case "del":
-            config.metronomes = config.metronomes.filter(x => x.id !== m.id);
-            break;
-        default: return;
-    }
-    save();
-    render();
 });
 // ---------------------------------------------------------------------------
-// Editing — panels
+// Reset key
 // ---------------------------------------------------------------------------
-function panelFrom(el) {
-    const row = el.closest(".panel");
-    return row ? panelOf(row.dataset.pid) : null;
-}
-panelsEl.addEventListener("input", e => {
-    const el = e.target;
-    const p = panelFrom(el);
-    if (!p)
-        return;
-    if (el.classList.contains("pname")) {
-        p.name = el.value;
-        // Panel names are also the options in every metronome's panel <select>.
-        renderMetros();
-    }
-    else if (el.dataset.act === "bg") {
-        p.bg = el.value;
-    }
-    else if (el.dataset.act === "opacity") {
-        p.opacity = Number(el.value);
-        el.parentElement.querySelector(".opacityval").textContent = `${p.opacity}%`;
-    }
-    else if (el.dataset.act === "labels") {
-        p.labels = el.checked;
-    }
-    else if (el.dataset.act === "bar") {
-        p.bar = el.checked;
-    }
-    else
-        return;
-    save();
+// Alt1 gives apps no global hotkeys, so this is an ordinary keydown listener:
+// it only fires while this window has focus, which the settings say plainly.
+let arming = false;
+bindEl.addEventListener("click", () => {
+    arming = !arming;
+    bindEl.classList.toggle("arming", arming);
+    bindEl.textContent = arming ? "press a key…"
+        : metro.resetKey ? keyLabel(metro.resetKey) : "click, then press a key";
 });
-panelsEl.addEventListener("click", e => {
-    const el = e.target.closest("button");
-    const p = el && panelFrom(el);
-    if (!el || !p)
-        return;
-    if (el.dataset.act === "open") {
-        openPanel(p.id);
-    }
-    else if (el.dataset.act === "delpanel") {
-        if (config.panels.length < 2)
+unbindEl.addEventListener("click", () => {
+    metro.resetKey = null;
+    save();
+    fillSettings();
+});
+window.addEventListener("keydown", e => {
+    const binding = bindingOf(e);
+    if (arming) {
+        e.preventDefault();
+        // Ctrl, Shift and friends are held while reaching for the real key —
+        // keep waiting rather than binding the modifier on its own.
+        if (!binding)
             return;
-        closePanel(p.id);
-        config.panels = config.panels.filter(x => x.id !== p.id);
-        // Orphaned metronomes go to the first surviving panel rather than
-        // vanishing along with it.
-        const fallback = config.panels[0].id;
-        for (const m of config.metronomes)
-            if (m.panel === p.id)
-                m.panel = fallback;
+        arming = false;
+        // Escape cancels rather than binding an unpressable key.
+        if (e.key !== "Escape")
+            metro.resetKey = binding;
+        // The button keeps focus otherwise, and a bound Space or Enter would
+        // then re-arm it instead of resetting.
+        bindEl.blur();
         save();
-        render();
-    }
-});
-document.getElementById("addpanel").addEventListener("click", () => {
-    config.panels.push({
-        id: uid("p"), name: `Panel ${config.panels.length + 1}`,
-        bg: "#000000", opacity: 70, labels: true, bar: true
-    });
-    save();
-    render();
-});
-document.getElementById("addmetro").addEventListener("click", () => {
-    const last = config.metronomes[config.metronomes.length - 1];
-    config.metronomes.push({
-        id: uid("m"), name: `Metronome ${config.metronomes.length + 1}`,
-        length: last?.length ?? 4, ticks: last?.ticks ?? 1,
-        color: "#ffffff", ranges: [], panel: last?.panel ?? config.panels[0].id,
-        startedAt: null
-    });
-    save();
-    render();
-});
-// One timestamp for all of them, so "all" really means in sync.
-document.getElementById("startall").addEventListener("click", () => {
-    const now = Date.now();
-    for (const m of config.metronomes)
-        m.startedAt = now;
-    save();
-    render();
-});
-document.getElementById("stopall").addEventListener("click", () => {
-    for (const m of config.metronomes)
-        m.startedAt = null;
-    save();
-    render();
-});
-// A panel window can stop its own metronomes; pick that up here.
-window.addEventListener("storage", e => {
-    if (e.key !== STORAGE_KEY)
+        fillSettings();
         return;
-    config = load();
-    render();
+    }
+    // An exact match, so Ctrl+Z doesn't fire a bare Z and vice versa.
+    if (!metro.resetKey || binding !== metro.resetKey)
+        return;
+    // Don't fire while the key is being typed into one of the settings fields
+    // — including Ctrl+Z, which is that field's undo.
+    if (e.target?.tagName === "INPUT")
+        return;
+    e.preventDefault();
+    restart();
 });
-bus?.addEventListener("message", () => {
-    config = load();
-    render();
+/** Back to count 1, now — and running, if it was stopped. */
+function restart() {
+    metro.startedAt = Date.now();
+    save();
+    paint(metro.startedAt);
+}
+// ---------------------------------------------------------------------------
+// Windows
+// ---------------------------------------------------------------------------
+const uid = () => "m" + Date.now().toString(36) + Math.floor(Math.random() * 1e4).toString(36);
+el("new").addEventListener("click", () => {
+    const next = uid();
+    // Written before opening, so the new window finds its settings already
+    // there and starts from this one's, rather than from the defaults.
+    config.metronomes.push({
+        id: next, length: metro.length, ticks: metro.ticks, color: metro.color,
+        resetKey: metro.resetKey, startedAt: Date.now()
+    });
+    save();
+    const url = new URL(`./index.html?m=${encodeURIComponent(next)}`, document.location.href).href;
+    window.open(url, `metronome-${next}`, "width=240,height=170,resizable=yes,scrollbars=no");
 });
-render();
+// The app's own window can't be closed from inside, and its metronome is the
+// one that comes back next time the app is opened — only spawned ones go away.
+const delEl = el("del");
+delEl.hidden = id === PRIMARY;
+delEl.addEventListener("click", () => {
+    config.metronomes = config.metronomes.filter(x => x.id !== id);
+    save();
+    window.close();
+});
+runEl.addEventListener("click", () => {
+    metro.startedAt = metro.startedAt == null ? Date.now() : null;
+    save();
+    paint(Date.now());
+});
+// Another window may have deleted or edited this metronome; re-resolve it.
+function reload() {
+    config = load();
+    metro = mine();
+    if (!settingsEl.hidden)
+        fillSettings();
+    layout();
+    paint(Date.now());
+}
+window.addEventListener("storage", e => {
+    if (e.key === STORAGE_KEY)
+        reload();
+});
+bus?.addEventListener("message", () => reload());
+// A window opens running: reopening one is meant to pick the count back up,
+// not to leave a stopped number sitting over the game.
+if (metro.startedAt == null)
+    restart();
+fillSettings();
+layout();
+requestAnimationFrame(frame);
 // ---------------------------------------------------------------------------
 // Alt1 registration
 // ---------------------------------------------------------------------------
-const addapp = document.getElementById("addapp");
 if (window.alt1) {
     alt1.identifyAppUrl("./appconfig.json");
 }
 else {
     const addappurl = `alt1://addapp/${new URL("./appconfig.json", document.location.href).href}`;
-    addapp.innerHTML = `Alt1 not detected — click <a href='${addappurl}'>here</a> to add this app to Alt1.
-		Panels open as ordinary browser popups outside Alt1.`;
+    el("addapp").innerHTML = `Alt1 not detected — click <a href='${addappurl}'>here</a> to add this app to Alt1.
+		Extra metronomes open as ordinary browser popups outside Alt1.`;
 }
 // keep the alt1 import referenced (types + handy in console)
 const alt1lib = alt1__WEBPACK_IMPORTED_MODULE_0__;
