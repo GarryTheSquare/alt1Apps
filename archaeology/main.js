@@ -118,8 +118,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 // GENERATED FILE — do not edit by hand.
 // Regenerate with: python3 apps/archaeology/tools/build-data.py
-// Source: runescape.wiki (Module:Collections table/data, Archaeology training),
-// available under CC BY-NC-SA 3.0.
+// Source: runescape.wiki (Module:Collections table/data, Artefacts,
+// Archaeology training), available under CC BY-NC-SA 3.0.
 /**
  * Sprite-sheet geometry for materials.data.png: one CELL_W x CELL_H cell per
  * material, COLS to a row, in ICON_ORDER. Matches a Material Storage slot.
@@ -162,7 +162,8 @@ const ARTEFACTS = {
             "soran": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "'Consensus ad Idem' painting": {
         "level": 74,
@@ -195,7 +196,8 @@ const ARTEFACTS = {
             "critic jacques": 1,
             "soran": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "'Da Boss Man' sculpture": {
         "level": 119,
@@ -230,7 +232,8 @@ const ARTEFACTS = {
             "velucia": 1,
             "wartface": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "'Disorder' painting": {
         "level": 24,
@@ -267,7 +270,8 @@ const ARTEFACTS = {
             "critic jacques": 1,
             "isaura": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "'Exsanguinate' spell scroll": {
         "level": 86,
@@ -299,7 +303,8 @@ const ARTEFACTS = {
             "soran": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "'Forged in War' sculpture": {
         "level": 100,
@@ -331,7 +336,8 @@ const ARTEFACTS = {
             "bentnoze": 1,
             "misc": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "'Friendship bracelet'": {
         "level": 87,
@@ -354,12 +360,14 @@ const ARTEFACTS = {
             "Museum - Dragonkin VI",
             "Dragonkin VI"
         ],
-        "needed": 3,
+        "needed": 2,
         "wanted": {
-            "misc": 1,
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": [
+            "Accessing Daemonheim - Depths excavation site (not consumed, but required every time and can be added to tool belt)."
+        ]
     },
     "'Frying pan'": {
         "level": 42,
@@ -387,7 +395,8 @@ const ARTEFACTS = {
             "misc": 1,
             "sir atcha": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "'Hallowed Be the Everlight' painting": {
         "level": 105,
@@ -424,7 +433,10 @@ const ARTEFACTS = {
             "critic jacques": 1,
             "sir atcha": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": [
+            "One is required for Hallowed Be... (not consumed)."
+        ]
     },
     "'Incite Fear' spell scroll": {
         "level": 58,
@@ -460,7 +472,8 @@ const ARTEFACTS = {
             "soran": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "'Lust' metal sculpture": {
         "level": 65,
@@ -497,7 +510,8 @@ const ARTEFACTS = {
             "chief tess": 1,
             "isaura": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "'Nosorog!' sculpture": {
         "level": 94,
@@ -528,7 +542,8 @@ const ARTEFACTS = {
         "wanted": {
             "bentnoze": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "'Pandemonium' tapestry": {
         "level": 89,
@@ -565,7 +580,8 @@ const ARTEFACTS = {
             "critic jacques": 1,
             "isaura": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "'Possession' metal sculpture": {
         "level": 104,
@@ -596,7 +612,8 @@ const ARTEFACTS = {
         "wanted": {
             "isaura": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "'Prima Legio' painting": {
         "level": 118,
@@ -633,7 +650,8 @@ const ARTEFACTS = {
             "critic jacques": 1,
             "soran": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "'Raksha' idol": {
         "level": 120,
@@ -665,7 +683,8 @@ const ARTEFACTS = {
             "misc": 1,
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "'Smoke Cloud' spell scroll": {
         "level": 100,
@@ -701,7 +720,8 @@ const ARTEFACTS = {
             "soran": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "'Solem in Umbra' painting": {
         "level": 25,
@@ -734,7 +754,8 @@ const ARTEFACTS = {
             "critic jacques": 1,
             "soran": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "'The Enlightened Soul' scroll": {
         "level": 109,
@@ -763,7 +784,8 @@ const ARTEFACTS = {
             "sir atcha": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "'The Eudoxian Elements' tablet": {
         "level": 109,
@@ -792,7 +814,8 @@ const ARTEFACTS = {
             "sir atcha": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "'The Lake of Fire' painting": {
         "level": 65,
@@ -829,7 +852,8 @@ const ARTEFACTS = {
             "critic jacques": 1,
             "isaura": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "'The Lord of Light' painting": {
         "level": 105,
@@ -866,7 +890,8 @@ const ARTEFACTS = {
             "critic jacques": 1,
             "sir atcha": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "'The Pride of Padosan' painting": {
         "level": 105,
@@ -903,7 +928,8 @@ const ARTEFACTS = {
             "critic jacques": 1,
             "sir atcha": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "'The Serpent's Fall' carving": {
         "level": 67,
@@ -938,7 +964,8 @@ const ARTEFACTS = {
         "wanted": {
             "eblis": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "'Torment' metal sculpture": {
         "level": 89,
@@ -969,7 +996,8 @@ const ARTEFACTS = {
         "wanted": {
             "isaura": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Amphora": {
         "level": 92,
@@ -996,7 +1024,8 @@ const ARTEFACTS = {
         "wanted": {
             "sir atcha": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Ancient globe": {
         "level": 118,
@@ -1027,7 +1056,8 @@ const ARTEFACTS = {
         "wanted": {
             "soran": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Ancient magic tablet": {
         "level": 107,
@@ -1056,7 +1086,8 @@ const ARTEFACTS = {
             "eblis": 1,
             "soran": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Ancient timepiece": {
         "level": 47,
@@ -1092,7 +1123,8 @@ const ARTEFACTS = {
             "soran": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Apex cap": {
         "level": 60,
@@ -1123,7 +1155,8 @@ const ARTEFACTS = {
         "wanted": {
             "eblis": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Avian song-egg player": {
         "level": 76,
@@ -1156,7 +1189,8 @@ const ARTEFACTS = {
             "lowse": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Aviansie dreamcoat": {
         "level": 81,
@@ -1188,7 +1222,8 @@ const ARTEFACTS = {
             "lowse": 1,
             "misc": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Battle plans": {
         "level": 118,
@@ -1219,7 +1254,8 @@ const ARTEFACTS = {
         "wanted": {
             "soran": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Beastkeeper helm": {
         "level": 94,
@@ -1256,7 +1292,8 @@ const ARTEFACTS = {
             "bentnoze": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Blackfire lance": {
         "level": 103,
@@ -1283,7 +1320,8 @@ const ARTEFACTS = {
         "wanted": {
             "lowse": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Branding iron": {
         "level": 45,
@@ -1314,7 +1352,8 @@ const ARTEFACTS = {
         "wanted": {
             "isaura": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Bronze Dominion medal": {
         "level": 69,
@@ -1347,7 +1386,8 @@ const ARTEFACTS = {
             "chief tess": 1,
             "sir atcha": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Castle gatestone": {
         "level": 73,
@@ -1374,7 +1414,8 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Centurion's dress sword": {
         "level": 1,
@@ -1399,7 +1440,8 @@ const ARTEFACTS = {
         "needed": 1,
         "wanted": {
             "misc": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Ceremonial dragonkin device": {
         "level": 70,
@@ -1420,7 +1462,8 @@ const ARTEFACTS = {
         "needed": 1,
         "wanted": {
             "giles": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Ceremonial dragonkin tablet": {
         "level": 90,
@@ -1441,7 +1484,8 @@ const ARTEFACTS = {
         "needed": 1,
         "wanted": {
             "giles": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Ceremonial mace": {
         "level": 74,
@@ -1474,7 +1518,8 @@ const ARTEFACTS = {
             "chief tess": 1,
             "soran": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Ceremonial plume": {
         "level": 81,
@@ -1507,7 +1552,8 @@ const ARTEFACTS = {
             "chief tess": 1,
             "lowse": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Ceremonial unicorn ornament": {
         "level": 48,
@@ -1537,7 +1583,8 @@ const ARTEFACTS = {
             "sir atcha": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Ceremonial unicorn saddle": {
         "level": 48,
@@ -1564,7 +1611,8 @@ const ARTEFACTS = {
         "wanted": {
             "sir atcha": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Chaos Elemental trophy": {
         "level": 110,
@@ -1595,7 +1643,8 @@ const ARTEFACTS = {
         "wanted": {
             "isaura": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Chaos star": {
         "level": 68,
@@ -1623,7 +1672,10 @@ const ARTEFACTS = {
             "isaura": 1,
             "misc": 2,
             "velucia": 1
-        }
+        },
+        "nonconsuming": [
+            "Accessing the Hydra portal in the Infernal Source achievement (not consumed, but required every time and can be added to tool belt)."
+        ]
     },
     "Chuluu stone": {
         "level": 118,
@@ -1661,7 +1713,8 @@ const ARTEFACTS = {
             "misc": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Comfort gatestone": {
         "level": 107,
@@ -1692,7 +1745,8 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Crest of Dagon": {
         "level": 24,
@@ -1724,7 +1778,8 @@ const ARTEFACTS = {
             "misc": 3,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Curse tablet": {
         "level": 60,
@@ -1759,7 +1814,8 @@ const ARTEFACTS = {
         "wanted": {
             "eblis": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Dayguard shield": {
         "level": 95,
@@ -1790,7 +1846,8 @@ const ARTEFACTS = {
         "wanted": {
             "lowse": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Death mask": {
         "level": 99,
@@ -1818,7 +1875,8 @@ const ARTEFACTS = {
             "misc": 1,
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Decorative amphora": {
         "level": 63,
@@ -1849,7 +1907,8 @@ const ARTEFACTS = {
         "wanted": {
             "eblis": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Decorative vase": {
         "level": 72,
@@ -1876,7 +1935,8 @@ const ARTEFACTS = {
         "wanted": {
             "sir atcha": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Dominarian device": {
         "level": 84,
@@ -1912,7 +1972,8 @@ const ARTEFACTS = {
             "misc": 1,
             "sir atcha": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Dominion discus": {
         "level": 61,
@@ -1939,7 +2000,8 @@ const ARTEFACTS = {
         "wanted": {
             "sir atcha": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Dominion javelin": {
         "level": 61,
@@ -1966,7 +2028,8 @@ const ARTEFACTS = {
         "wanted": {
             "sir atcha": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Dominion pelte shield": {
         "level": 61,
@@ -1993,7 +2056,8 @@ const ARTEFACTS = {
         "wanted": {
             "sir atcha": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Dominion torch": {
         "level": 69,
@@ -2031,7 +2095,8 @@ const ARTEFACTS = {
             "misc": 2,
             "sir atcha": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Dorgeshuun spear": {
         "level": 100,
@@ -2054,12 +2119,15 @@ const ARTEFACTS = {
             "Green Gobbo Goodies III",
             "Museum - Bandosian II"
         ],
-        "needed": 4,
+        "needed": 3,
         "wanted": {
-            "misc": 2,
+            "misc": 1,
             "velucia": 1,
             "wartface": 1
-        }
+        },
+        "nonconsuming": [
+            "One is used for the Stick It to Da Boss Man achievement (not consumed)."
+        ]
     },
     "Doru spear": {
         "level": 117,
@@ -2086,7 +2154,8 @@ const ARTEFACTS = {
         "wanted": {
             "sir atcha": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Dragon burner": {
         "level": 102,
@@ -2114,7 +2183,8 @@ const ARTEFACTS = {
             "misc": 4,
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Dragon scalpel": {
         "level": 101,
@@ -2142,7 +2212,8 @@ const ARTEFACTS = {
             "misc": 1,
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Dragonkin calendar": {
         "level": 99,
@@ -2173,7 +2244,8 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Dragonkin device": {
         "level": 50,
@@ -2190,7 +2262,8 @@ const ARTEFACTS = {
         ],
         "collections": [],
         "needed": 1,
-        "wanted": {}
+        "wanted": {},
+        "nonconsuming": []
     },
     "Dragonkin staff": {
         "level": 99,
@@ -2217,7 +2290,8 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Dragonkin tablet": {
         "level": 50,
@@ -2234,7 +2308,8 @@ const ARTEFACTS = {
         ],
         "collections": [],
         "needed": 1,
-        "wanted": {}
+        "wanted": {},
+        "nonconsuming": []
     },
     "Drogokishuun hook sword": {
         "level": 110,
@@ -2265,7 +2340,8 @@ const ARTEFACTS = {
         "wanted": {
             "velucia": 1,
             "wartface": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Ekeleshuun blinder mask": {
         "level": 76,
@@ -2298,7 +2374,8 @@ const ARTEFACTS = {
             "velucia": 1,
             "wartface": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Engraved ring of kinship": {
         "level": 73,
@@ -2325,7 +2402,8 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Everlight harp": {
         "level": 51,
@@ -2355,7 +2433,8 @@ const ARTEFACTS = {
             "sir atcha": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Everlight trumpet": {
         "level": 51,
@@ -2387,7 +2466,8 @@ const ARTEFACTS = {
             "sir atcha": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Everlight violin": {
         "level": 51,
@@ -2420,7 +2500,8 @@ const ARTEFACTS = {
             "sir atcha": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Excavator portal mine": {
         "level": 77,
@@ -2447,7 +2528,8 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Exploratory totem": {
         "level": 77,
@@ -2474,7 +2556,8 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Fishing trident": {
         "level": 84,
@@ -2507,7 +2590,8 @@ const ARTEFACTS = {
             "chief tess": 1,
             "sir atcha": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Flat cap": {
         "level": 111,
@@ -2536,7 +2620,8 @@ const ARTEFACTS = {
             "lowse": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Folded-arm figurine (female)": {
         "level": 56,
@@ -2563,7 +2648,8 @@ const ARTEFACTS = {
         "wanted": {
             "sir atcha": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Folded-arm figurine (male)": {
         "level": 56,
@@ -2590,7 +2676,8 @@ const ARTEFACTS = {
         "wanted": {
             "sir atcha": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Funerary urn of blood": {
         "level": 66,
@@ -2622,7 +2709,8 @@ const ARTEFACTS = {
             "eblis": 1,
             "misc": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Funerary urn of ice": {
         "level": 63,
@@ -2654,7 +2742,8 @@ const ARTEFACTS = {
             "eblis": 1,
             "misc": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Funerary urn of miasma": {
         "level": 67,
@@ -2685,7 +2774,8 @@ const ARTEFACTS = {
         "wanted": {
             "eblis": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Funerary urn of shadow": {
         "level": 60,
@@ -2717,7 +2807,8 @@ const ARTEFACTS = {
             "eblis": 1,
             "misc": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Funerary urn of smoke": {
         "level": 62,
@@ -2749,7 +2840,8 @@ const ARTEFACTS = {
             "eblis": 1,
             "misc": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Garagorshuun anchor": {
         "level": 97,
@@ -2781,7 +2873,8 @@ const ARTEFACTS = {
             "misc": 1,
             "velucia": 1,
             "wartface": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Gladiator helmet": {
         "level": 66,
@@ -2812,7 +2905,8 @@ const ARTEFACTS = {
         "wanted": {
             "eblis": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Gladiator sword": {
         "level": 66,
@@ -2843,7 +2937,8 @@ const ARTEFACTS = {
         "wanted": {
             "eblis": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Gold dish": {
         "level": 120,
@@ -2871,7 +2966,8 @@ const ARTEFACTS = {
             "misc": 1,
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Golden projection 'needle'": {
         "level": 103,
@@ -2898,7 +2994,8 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Golem heart": {
         "level": 98,
@@ -2934,7 +3031,8 @@ const ARTEFACTS = {
             "lowse": 1,
             "misc": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Golem instruction": {
         "level": 98,
@@ -2968,7 +3066,8 @@ const ARTEFACTS = {
             "misc": 2,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Greater demon mask": {
         "level": 29,
@@ -3000,13 +3099,15 @@ const ARTEFACTS = {
             "Zamorakian I",
             "Museum - Zamorakian I"
         ],
-        "needed": 4,
+        "needed": 3,
         "wanted": {
             "isaura": 1,
-            "misc": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": [
+            "Completing the How Do You Do, Fellow Demon achievement (not consumed)."
+        ]
     },
     "Halak's cube": {
         "level": 107,
@@ -3037,7 +3138,8 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Hallowed lantern": {
         "level": 42,
@@ -3069,7 +3171,8 @@ const ARTEFACTS = {
             "misc": 2,
             "sir atcha": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Hand of the Ancients": {
         "level": 62,
@@ -3104,7 +3207,8 @@ const ARTEFACTS = {
         "wanted": {
             "eblis": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Hawkeye lens multi-vision scope": {
         "level": 85,
@@ -3131,7 +3235,8 @@ const ARTEFACTS = {
         "wanted": {
             "lowse": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Hellfire haladie": {
         "level": 98,
@@ -3162,7 +3267,8 @@ const ARTEFACTS = {
         "wanted": {
             "isaura": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Hellfire katar": {
         "level": 98,
@@ -3190,7 +3296,8 @@ const ARTEFACTS = {
             "isaura": 1,
             "misc": 2,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Hellfire zaghnal": {
         "level": 98,
@@ -3221,7 +3328,8 @@ const ARTEFACTS = {
         "wanted": {
             "isaura": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "High priest crozier": {
         "level": 89,
@@ -3254,7 +3362,8 @@ const ARTEFACTS = {
             "chief tess": 1,
             "velucia": 1,
             "wartface": 1
-        }
+        },
+        "nonconsuming": []
     },
     "High priest mitre": {
         "level": 89,
@@ -3288,7 +3397,8 @@ const ARTEFACTS = {
             "velucia": 1,
             "wartface": 1,
             "wise old man": 2
-        }
+        },
+        "nonconsuming": []
     },
     "High priest orb": {
         "level": 89,
@@ -3321,7 +3431,8 @@ const ARTEFACTS = {
             "chief tess": 1,
             "velucia": 1,
             "wartface": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Hobgoblin mansticker": {
         "level": 110,
@@ -3348,7 +3459,8 @@ const ARTEFACTS = {
         "wanted": {
             "bentnoze": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Homely totem": {
         "level": 87,
@@ -3375,7 +3487,8 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Hookah pipe": {
         "level": 20,
@@ -3408,7 +3521,8 @@ const ARTEFACTS = {
             "chief tess": 1,
             "isaura": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Horogothgar cooking pot": {
         "level": 119,
@@ -3439,7 +3553,8 @@ const ARTEFACTS = {
         "wanted": {
             "velucia": 1,
             "wartface": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Huzamogaarb chaos crown": {
         "level": 104,
@@ -3472,7 +3587,8 @@ const ARTEFACTS = {
             "velucia": 1,
             "wartface": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Idithuun horn ring": {
         "level": 94,
@@ -3499,7 +3615,8 @@ const ARTEFACTS = {
         "wanted": {
             "velucia": 1,
             "wartface": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Ikovian gerege": {
         "level": 70,
@@ -3523,13 +3640,15 @@ const ARTEFACTS = {
             "Armadylean I",
             "Museum - Armadylean I"
         ],
-        "needed": 4,
+        "needed": 3,
         "wanted": {
             "lowse": 1,
-            "misc": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": [
+            "Accessing the Stormguard Citadel (not consumed, but required every time and can be added to tool belt)."
+        ]
     },
     "Imp mask": {
         "level": 29,
@@ -3562,7 +3681,8 @@ const ARTEFACTS = {
             "isaura": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Infula robes": {
         "level": 62,
@@ -3597,7 +3717,8 @@ const ARTEFACTS = {
         "wanted": {
             "eblis": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Inquisitor's ceremonial armour": {
         "level": 64,
@@ -3628,7 +3749,8 @@ const ARTEFACTS = {
         "wanted": {
             "eblis": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Inquisitor's ceremonial mask": {
         "level": 64,
@@ -3663,7 +3785,8 @@ const ARTEFACTS = {
         "wanted": {
             "eblis": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Inquisitor's seal": {
         "level": 64,
@@ -3698,7 +3821,8 @@ const ARTEFACTS = {
         "wanted": {
             "eblis": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Kal-i-kra chieftain crown": {
         "level": 115,
@@ -3727,7 +3851,8 @@ const ARTEFACTS = {
             "bentnoze": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Kal-i-kra mace": {
         "level": 115,
@@ -3758,7 +3883,8 @@ const ARTEFACTS = {
         "wanted": {
             "bentnoze": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Kal-i-kra warhorn": {
         "level": 115,
@@ -3789,7 +3915,8 @@ const ARTEFACTS = {
         "wanted": {
             "bentnoze": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Kantharos cup": {
         "level": 72,
@@ -3821,7 +3948,8 @@ const ARTEFACTS = {
             "misc": 1,
             "sir atcha": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Keshik drum": {
         "level": 76,
@@ -3858,7 +3986,8 @@ const ARTEFACTS = {
             "lowse": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Kilaya": {
         "level": 96,
@@ -3885,7 +4014,8 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Kontos lance": {
         "level": 117,
@@ -3912,7 +4042,8 @@ const ARTEFACTS = {
         "wanted": {
             "sir atcha": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Kopis dagger": {
         "level": 100,
@@ -3939,7 +4070,8 @@ const ARTEFACTS = {
         "wanted": {
             "sir atcha": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Larupia trophy": {
         "level": 81,
@@ -3970,7 +4102,8 @@ const ARTEFACTS = {
         "wanted": {
             "isaura": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Legatus Maximus figurine": {
         "level": 25,
@@ -4005,7 +4138,8 @@ const ARTEFACTS = {
             "soran": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Legatus pendant": {
         "level": 47,
@@ -4037,13 +4171,16 @@ const ARTEFACTS = {
             "Zarosian II",
             "Museum - Zarosian II"
         ],
-        "needed": 4,
+        "needed": 3,
         "wanted": {
             "chief tess": 1,
-            "misc": 1,
             "soran": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": [
+            "Accessing the carcerem debris (not consumed, but required every time and can be added to tool belt).",
+            "Entering the maximum security barrier in The Vault of Shadows (not consumed, but required every time and can be added to tool belt)."
+        ]
     },
     "Legionary gladius": {
         "level": 12,
@@ -4074,7 +4211,8 @@ const ARTEFACTS = {
         "wanted": {
             "soran": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Legionary square shield": {
         "level": 12,
@@ -4105,7 +4243,8 @@ const ARTEFACTS = {
         "wanted": {
             "soran": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Lesser demon mask": {
         "level": 29,
@@ -4142,7 +4281,8 @@ const ARTEFACTS = {
             "isaura": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Lingam stone": {
         "level": 108,
@@ -4174,7 +4314,8 @@ const ARTEFACTS = {
             "misc": 1,
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Lion trophy": {
         "level": 81,
@@ -4205,7 +4346,8 @@ const ARTEFACTS = {
         "wanted": {
             "isaura": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Loarnab rod": {
         "level": 63,
@@ -4236,7 +4378,8 @@ const ARTEFACTS = {
         "wanted": {
             "eblis": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Manacles": {
         "level": 45,
@@ -4267,7 +4410,8 @@ const ARTEFACTS = {
         "wanted": {
             "isaura": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Master control": {
         "level": 108,
@@ -4299,7 +4443,8 @@ const ARTEFACTS = {
             "misc": 1,
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Meditation pipe": {
         "level": 106,
@@ -4326,7 +4471,8 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Model chariot": {
         "level": 67,
@@ -4361,7 +4507,8 @@ const ARTEFACTS = {
         "wanted": {
             "eblis": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Morin khuur": {
         "level": 76,
@@ -4390,7 +4537,8 @@ const ARTEFACTS = {
             "lowse": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Narogoshuun 'Hob-da-Gob' ball": {
         "level": 76,
@@ -4417,7 +4565,8 @@ const ARTEFACTS = {
         "wanted": {
             "velucia": 1,
             "wartface": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Necromantic focus": {
         "level": 86,
@@ -4453,7 +4602,8 @@ const ARTEFACTS = {
             "soran": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Night owl flight goggles": {
         "level": 111,
@@ -4484,7 +4634,8 @@ const ARTEFACTS = {
         "wanted": {
             "lowse": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Nightguard shield": {
         "level": 103,
@@ -4515,7 +4666,8 @@ const ARTEFACTS = {
         "wanted": {
             "lowse": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Ogre Kyzaj axe": {
         "level": 81,
@@ -4546,7 +4698,8 @@ const ARTEFACTS = {
         "wanted": {
             "bentnoze": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Opulent wine goblet": {
         "level": 20,
@@ -4576,7 +4729,8 @@ const ARTEFACTS = {
             "isaura": 1,
             "misc": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Order of Dis robes": {
         "level": 36,
@@ -4607,7 +4761,8 @@ const ARTEFACTS = {
         "wanted": {
             "isaura": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Ork cleaver sword": {
         "level": 81,
@@ -4635,7 +4790,8 @@ const ARTEFACTS = {
             "bentnoze": 1,
             "misc": 2,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Orthenglass flask": {
         "level": 102,
@@ -4663,7 +4819,8 @@ const ARTEFACTS = {
             "misc": 2,
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Ourg megahitter": {
         "level": 97,
@@ -4699,7 +4856,8 @@ const ARTEFACTS = {
             "bentnoze": 1,
             "misc": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Ourg tower/goblin cower shield": {
         "level": 97,
@@ -4734,7 +4892,8 @@ const ARTEFACTS = {
         "wanted": {
             "bentnoze": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Pasaha": {
         "level": 90,
@@ -4762,7 +4921,8 @@ const ARTEFACTS = {
             "misc": 1,
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Patera bowl": {
         "level": 72,
@@ -4793,7 +4953,8 @@ const ARTEFACTS = {
         "wanted": {
             "sir atcha": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Peacocking parasol": {
         "level": 81,
@@ -4824,7 +4985,8 @@ const ARTEFACTS = {
         "wanted": {
             "lowse": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Personal totem": {
         "level": 106,
@@ -4855,7 +5017,8 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Plant seed satchel": {
         "level": 78,
@@ -4886,7 +5049,8 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Pontifex Maximus figurine": {
         "level": 74,
@@ -4923,7 +5087,8 @@ const ARTEFACTS = {
             "chief tess": 1,
             "soran": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Pontifex censer": {
         "level": 81,
@@ -4960,7 +5125,8 @@ const ARTEFACTS = {
             "chief tess": 1,
             "soran": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Pontifex crozier": {
         "level": 81,
@@ -4993,7 +5159,8 @@ const ARTEFACTS = {
             "chief tess": 1,
             "soran": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Pontifex mitre": {
         "level": 81,
@@ -5026,7 +5193,8 @@ const ARTEFACTS = {
             "soran": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Pontifex signet ring": {
         "level": 58,
@@ -5058,13 +5226,17 @@ const ARTEFACTS = {
             "Zarosian II",
             "Museum - Zarosian II"
         ],
-        "needed": 5,
+        "needed": 4,
         "wanted": {
             "chief tess": 1,
-            "misc": 2,
+            "misc": 1,
             "soran": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": [
+            "Entering Pontifex barrier at Kharid-et (not consumed, but required every time and can be added to tool belt).",
+            "Entering the maximum security barrier in The Vault of Shadows (not consumed, but required every time and can be added to tool belt)."
+        ]
     },
     "Portable phylactery": {
         "level": 107,
@@ -5098,7 +5270,8 @@ const ARTEFACTS = {
             "soran": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Portable portal generator": {
         "level": 113,
@@ -5129,7 +5302,8 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Praetorian hood": {
         "level": 114,
@@ -5166,7 +5340,8 @@ const ARTEFACTS = {
             "soran": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Praetorian robes": {
         "level": 114,
@@ -5201,7 +5376,8 @@ const ARTEFACTS = {
         "wanted": {
             "soran": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Praetorian staff": {
         "level": 114,
@@ -5237,7 +5413,8 @@ const ARTEFACTS = {
             "misc": 1,
             "soran": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Primis Elementis standard": {
         "level": 12,
@@ -5264,7 +5441,8 @@ const ARTEFACTS = {
         "wanted": {
             "soran": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Projection attuner": {
         "level": 103,
@@ -5295,7 +5473,8 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Protective goggles": {
         "level": 101,
@@ -5323,7 +5502,8 @@ const ARTEFACTS = {
             "misc": 1,
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Prototype godbow": {
         "level": 112,
@@ -5354,7 +5534,8 @@ const ARTEFACTS = {
         "wanted": {
             "lowse": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Prototype godstaff": {
         "level": 112,
@@ -5385,7 +5566,8 @@ const ARTEFACTS = {
         "wanted": {
             "lowse": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Prototype godsword": {
         "level": 112,
@@ -5417,7 +5599,10 @@ const ARTEFACTS = {
             "lowse": 1,
             "misc": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": [
+            "Damaged version used for the That's Not How it Works achievement (not consumed)."
+        ]
     },
     "Prototype gravimeter": {
         "level": 91,
@@ -5448,7 +5633,8 @@ const ARTEFACTS = {
         "wanted": {
             "lowse": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Quintessence counter": {
         "level": 118,
@@ -5479,7 +5665,8 @@ const ARTEFACTS = {
         "wanted": {
             "lowse": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Rekeshuun war tether": {
         "level": 76,
@@ -5510,7 +5697,8 @@ const ARTEFACTS = {
         "wanted": {
             "velucia": 1,
             "wartface": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Ritual bell": {
         "level": 90,
@@ -5537,7 +5725,8 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Ritual dagger": {
         "level": 36,
@@ -5565,13 +5754,15 @@ const ARTEFACTS = {
             "Zamorakian I",
             "Museum - Zamorakian I"
         ],
-        "needed": 4,
+        "needed": 3,
         "wanted": {
             "isaura": 1,
-            "misc": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": [
+            "Completing the I Made Dis achievement (not consumed)."
+        ]
     },
     "Rod of Asclepius": {
         "level": 92,
@@ -5605,7 +5796,8 @@ const ARTEFACTS = {
             "misc": 1,
             "sir atcha": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Saragorgak star crown": {
         "level": 104,
@@ -5638,7 +5830,8 @@ const ARTEFACTS = {
             "velucia": 1,
             "wartface": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "She-wolf trophy": {
         "level": 81,
@@ -5669,7 +5862,8 @@ const ARTEFACTS = {
         "wanted": {
             "isaura": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Silver Dominion medal": {
         "level": 69,
@@ -5702,7 +5896,8 @@ const ARTEFACTS = {
             "chief tess": 1,
             "sir atcha": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Singing bowl": {
         "level": 106,
@@ -5729,7 +5924,10 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": [
+            "Completing the Fragmented Memories mystery (not consumed)."
+        ]
     },
     "Snuff box": {
         "level": 78,
@@ -5760,7 +5958,8 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Songbird recorder": {
         "level": 91,
@@ -5793,7 +5992,8 @@ const ARTEFACTS = {
             "lowse": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Spear of Annihilation (step 3)": {
         "level": 115,
@@ -5820,7 +6020,8 @@ const ARTEFACTS = {
             "other"
         ],
         "needed": 1,
-        "wanted": {}
+        "wanted": {},
+        "nonconsuming": []
     },
     "Spear of Annihilation from tip (all steps)": {
         "level": 115,
@@ -5867,7 +6068,8 @@ const ARTEFACTS = {
             "other"
         ],
         "needed": 1,
-        "wanted": {}
+        "wanted": {},
+        "nonconsuming": []
     },
     "Spear of Annihilation with shaft (step 1)": {
         "level": 115,
@@ -5894,7 +6096,8 @@ const ARTEFACTS = {
             "other"
         ],
         "needed": 1,
-        "wanted": {}
+        "wanted": {},
+        "nonconsuming": []
     },
     "Spear of Annihilation with shaft + spokes (step 2)": {
         "level": 115,
@@ -5921,7 +6124,8 @@ const ARTEFACTS = {
             "other"
         ],
         "needed": 1,
-        "wanted": {}
+        "wanted": {},
+        "nonconsuming": []
     },
     "Spent summoning charm": {
         "level": 87,
@@ -5948,7 +6152,8 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Spherical astrolabe": {
         "level": 118,
@@ -5979,7 +6184,8 @@ const ARTEFACTS = {
         "wanted": {
             "lowse": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Spiked dog collar": {
         "level": 68,
@@ -6006,12 +6212,14 @@ const ARTEFACTS = {
             "Zamorakian II",
             "Museum - Zamorakian II"
         ],
-        "needed": 3,
+        "needed": 2,
         "wanted": {
             "isaura": 1,
-            "misc": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": [
+            "Used for the Who's a Bad Boy? achievement (not consumed)."
+        ]
     },
     "Storage totem": {
         "level": 78,
@@ -6038,7 +6246,8 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Stormguard gerege": {
         "level": 95,
@@ -6065,12 +6274,14 @@ const ARTEFACTS = {
             "Armadylean II",
             "Museum - Armadylean II"
         ],
-        "needed": 3,
+        "needed": 2,
         "wanted": {
             "lowse": 1,
-            "misc": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": [
+            "Accessing Howl's Floating Workshop in the Stormguard Citadel (not consumed, but required every time and can be added to tool belt)."
+        ]
     },
     "Talon-3 razor wing": {
         "level": 85,
@@ -6101,7 +6312,8 @@ const ARTEFACTS = {
         "wanted": {
             "lowse": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Tetracompass (unpowered)": {
         "level": 50,
@@ -6138,7 +6350,8 @@ const ARTEFACTS = {
         "needed": 1,
         "wanted": {
             "misc": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Thorobshuun battle standard": {
         "level": 83,
@@ -6174,7 +6387,8 @@ const ARTEFACTS = {
             "misc": 1,
             "velucia": 1,
             "wartface": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Toy glider": {
         "level": 70,
@@ -6201,7 +6415,8 @@ const ARTEFACTS = {
         "wanted": {
             "lowse": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Toy war golem": {
         "level": 70,
@@ -6232,7 +6447,8 @@ const ARTEFACTS = {
         "wanted": {
             "lowse": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Trishula": {
         "level": 104,
@@ -6263,7 +6479,8 @@ const ARTEFACTS = {
         "wanted": {
             "isaura": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Tsutsaroth helm": {
         "level": 116,
@@ -6296,7 +6513,8 @@ const ARTEFACTS = {
             "isaura": 1,
             "velucia": 1,
             "wise old man": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Tsutsaroth pauldron": {
         "level": 116,
@@ -6327,7 +6545,8 @@ const ARTEFACTS = {
         "wanted": {
             "isaura": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Tsutsaroth piercing": {
         "level": 104,
@@ -6358,7 +6577,8 @@ const ARTEFACTS = {
         "wanted": {
             "isaura": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Tsutsaroth urumi": {
         "level": 116,
@@ -6389,7 +6609,8 @@ const ARTEFACTS = {
         "wanted": {
             "isaura": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Vazara": {
         "level": 96,
@@ -6420,7 +6641,8 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Venator dagger": {
         "level": 5,
@@ -6447,7 +6669,8 @@ const ARTEFACTS = {
         "wanted": {
             "soran": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Venator light crossbow": {
         "level": 5,
@@ -6474,7 +6697,8 @@ const ARTEFACTS = {
         "wanted": {
             "soran": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Vigorem vial": {
         "level": 100,
@@ -6505,7 +6729,8 @@ const ARTEFACTS = {
         "wanted": {
             "soran": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Virius trophy": {
         "level": 110,
@@ -6536,7 +6761,8 @@ const ARTEFACTS = {
         "wanted": {
             "isaura": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Warped trinket": {
         "level": 113,
@@ -6571,7 +6797,8 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Xiphos short sword": {
         "level": 100,
@@ -6598,7 +6825,8 @@ const ARTEFACTS = {
         "wanted": {
             "sir atcha": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Xolo hard hat": {
         "level": 113,
@@ -6625,7 +6853,8 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Xolo pickaxe": {
         "level": 113,
@@ -6656,7 +6885,8 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Xolo shield": {
         "level": 119,
@@ -6687,7 +6917,8 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Xolo spear": {
         "level": 119,
@@ -6714,7 +6945,8 @@ const ARTEFACTS = {
         "wanted": {
             "sharrigan": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Yurkolgokh stink grenade": {
         "level": 83,
@@ -6745,7 +6977,8 @@ const ARTEFACTS = {
         "wanted": {
             "velucia": 1,
             "wartface": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Zaros effigy": {
         "level": 17,
@@ -6776,7 +7009,8 @@ const ARTEFACTS = {
         "wanted": {
             "soran": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Zarosian ewer": {
         "level": 93,
@@ -6803,7 +7037,8 @@ const ARTEFACTS = {
         "wanted": {
             "soran": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Zarosian stein": {
         "level": 93,
@@ -6834,7 +7069,8 @@ const ARTEFACTS = {
         "wanted": {
             "soran": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     },
     "Zarosian training dummy": {
         "level": 17,
@@ -6862,7 +7098,8 @@ const ARTEFACTS = {
             "misc": 1,
             "soran": 1,
             "velucia": 1
-        }
+        },
+        "nonconsuming": []
     }
 };
 const COLLECTIONS = {
@@ -13709,6 +13946,19 @@ function wikiLink(title, label = title) {
     const href = `https://runescape.wiki/w/${encodeURIComponent(title.replace(/ /g, "_"))}`;
     return `<a href="${href}" target="_blank" rel="noopener">${esc(label)}</a>`;
 }
+/**
+ * The artefact's name, with an asterisk when the wiki lists a use that hands it
+ * straight back — an achievement you only show it for, a tool-belt key. Those
+ * uses are deliberately not counted in `needed` (a Ritual dagger is 3, not 4),
+ * so the asterisk is all that is left to say the use exists.
+ */
+function artefactName(name) {
+    const notes = _data__WEBPACK_IMPORTED_MODULE_6__.ARTEFACTS[name]?.nonconsuming ?? [];
+    if (!notes.length)
+        return wikiLink(name);
+    const tip = `Also used, without being consumed, for: ${notes.join(" ")}`;
+    return `${wikiLink(name)}<span class="star" title="${esc(tip)}">*</span>`;
+}
 function num(n) {
     return n.toLocaleString("en-GB");
 }
@@ -13759,7 +14009,7 @@ function artefactRow(name, artefact) {
     const tip = `${matSummary(artefact)} per copy${wantedBy(artefact) ? ` · wanted by ${wantedBy(artefact)}` : ""}`;
     return `<div class="art">
 		<span class="lvl">${artefact.level}</span>
-		<span class="name" title="${esc(tip)}">${wikiLink(name)}</span>
+		<span class="name" title="${esc(tip)}">${artefactName(name)}</span>
 		${pips(name, artefact.needed)}
 		${extras(name)}
 	</div>`;
@@ -13773,7 +14023,7 @@ function renderTraining() {
             .map(h => {
             const rows = (0,_state__WEBPACK_IMPORTED_MODULE_7__.artefactsAtHotspot)(h).map(([name, a]) => [
                 String(a.level),
-                wikiLink(name),
+                artefactName(name),
                 `${a.needed}`,
                 num(a.xp),
                 num(a.chronotes),
@@ -13920,7 +14170,7 @@ function renderCollections() {
             return `<div class="art">
 						<span class="pill ${state}" title="The copy allocated to this collection">
 							${STATE_MARK[state]}</span>
-						<span class="name">${wikiLink(artefact)}</span>
+						<span class="name">${artefactName(artefact)}</span>
 						${pips(artefact, needed)}
 					</div>`;
         })
