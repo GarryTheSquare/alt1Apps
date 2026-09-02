@@ -18,6 +18,10 @@
     padding:1.5rem 1.75rem; }
   h1 { font-weight:normal; margin:0 0 .25rem; }
   .sub { color:#5a4a34; font-size:.9rem; margin:0 0 1.25rem; }
+  h2.cat { font-weight:normal; font-size:1rem; letter-spacing:.08em; text-transform:uppercase;
+    color:#5a4a34; margin:1.4rem 0 .3rem; padding-bottom:.2rem;
+    border-bottom:1px solid var(--body-border); }
+  h2.cat:first-of-type { margin-top:0; }
   ul { list-style:none; margin:0; padding:0; }
   .app { display:flex; align-items:center; gap:.9rem; padding:.7rem 0;
     border-top:1px solid var(--body-border); }
@@ -46,18 +50,8 @@
 <main>
   <h1>Alt1 Toolkit apps</h1>
   <p class="sub">Click <strong>Add to Alt1</strong> to install a tool (opens the Alt1 client), or the name to open it in a browser. You need the free <a href="https://runeapps.org/alt1" style="color:var(--link-color)">Alt1 Toolkit</a> installed for the install links to do anything.</p>
+  <h2 class="cat">Tools</h2>
   <ul>
-        <li class="app">
-            <img class="icon" src="archaeology/icon.png" alt="" width="32" height="32">
-            <div class="meta">
-                <a class="name" href="archaeology/">Archaeology Tracker</a>
-                <p class="desc">Archaeology training guide, artefact tracker, restoration materials and collection overview.</p>
-            </div>
-            <div class="actions">
-                <a class="add" data-dir="archaeology" href="#" title="Install the copy served from this homelab">Add to Alt1</a>
-                
-            </div>
-        </li>
         <li class="app">
             <img class="icon" src="metronome/icon.png" alt="" width="32" height="32">
             <div class="meta">
@@ -77,6 +71,19 @@
             </div>
             <div class="actions">
                 <a class="add" data-dir="nemiforest" href="#" title="Install the copy served from this homelab">Add to Alt1</a>
+                
+            </div>
+        </li></ul>
+  <h2 class="cat">Calculators</h2>
+  <ul>
+        <li class="app">
+            <img class="icon" src="archaeology/icon.png" alt="" width="32" height="32">
+            <div class="meta">
+                <a class="name" href="archaeology/">Archaeology Tracker</a>
+                <p class="desc">Archaeology training guide, artefact tracker, restoration materials and collection overview.</p>
+            </div>
+            <div class="actions">
+                <a class="add" data-dir="archaeology" href="#" title="Install the copy served from this homelab">Add to Alt1</a>
                 
             </div>
         </li>
