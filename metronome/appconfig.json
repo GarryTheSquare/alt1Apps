@@ -1,6 +1,6 @@
 {
 	"appName": "Metronome",
-	"description": "A visual metronome — a counter that loops 1 to N on a game-tick interval, in a small window over the game.",
+	"description": "A visual metronome to overlay your game window to help with tick manips and npc timings. Based on OSRS Visual metronome plugin",
 	"appUrl": "./index.html",
 	"configUrl": "./appconfig.json",
 	"iconUrl": "./icon.png",

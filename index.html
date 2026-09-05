@@ -9,14 +9,14 @@
 <body>
 <main>
   <h1>Alt1 Toolkit apps</h1>
-  <p class="sub">Click <strong>Add to Alt1</strong> to install a tool (opens the Alt1 client), or <strong>Open in browser</strong> to just view it as a web page. You need the free <a href="https://runeapps.org/alt1" style="color:var(--link-color)">Alt1 Toolkit</a> installed for the install links to do anything.</p>
+  <p class="sub">You can add these apps to your alt1 menu, or open them in the browser if you prefer. The browser versions are not able to pull certain numbers for you from the game, but their main functionality will work.</p>
   <h2 class="cat">Tools</h2>
   <ul>
         <li class="app">
             <img class="icon" src="metronome/icon.png" alt="" width="32" height="32">
             <div class="meta">
                 <a class="name" href="metronome/">Metronome</a>
-                <p class="desc">A visual metronome — a counter that loops 1 to N on a game-tick interval, in a small window over the game.</p>
+                <p class="desc">A visual metronome to overlay your game window to help with tick manips and npc timings. Based on OSRS Visual metronome plugin</p>
             </div>
             <div class="actions">
                 <a class="add" data-dir="metronome" href="#" title="Install the copy served from this homelab">Add to Alt1</a>
@@ -28,7 +28,7 @@
             <img class="icon" src="nemiforest/icon.png" alt="" width="32" height="32">
             <div class="meta">
                 <a class="name" href="nemiforest/">Nemi Forest</a>
-                <p class="desc">Shows the image from the newest r/NemiForest post.</p>
+                <p class="desc">Shows the image from the newest r/NemiForest post. It does currently not check if the status is live though, but this rarely happens for me</p>
             </div>
             <div class="actions">
                 <a class="add" data-dir="nemiforest" href="#" title="Install the copy served from this homelab">Add to Alt1</a>
@@ -37,6 +37,7 @@
             </div>
         </li></ul>
   <h2 class="cat">Calculators</h2>
+  <p class="catnote">The calculators are a bit messier due to the large amount of input possibilities, they are correct for my testing, but let me know if something is off</p>
   <ul>
         <li class="app">
             <img class="icon" src="archaeology/icon.png" alt="" width="32" height="32">
@@ -54,7 +55,7 @@
             <img class="icon" src="ritualcalc/icon.png" alt="" width="32" height="32">
             <div class="meta">
                 <a class="name" href="ritualcalc/">Ritual Materials</a>
-                <p class="desc">Necromancy ritual material calculator — inks, candles, focus objects, and the necroplasm rituals behind them.</p>
+                <p class="desc">Necromancy ritual material calculator — inks, candles, focus objects and sub rituals if making everything from basic mats.</p>
             </div>
             <div class="actions">
                 <a class="add" data-dir="ritualcalc" href="#" title="Install the copy served from this homelab">Add to Alt1</a>
@@ -66,7 +67,7 @@
             <img class="icon" src="thieving/icon.png" alt="" width="32" height="32">
             <div class="meta">
                 <a class="name" href="thieving/">Thieving Tables</a>
-                <p class="desc">Pickpocketing, stall and chest tables from the wiki, each with its full loot table.</p>
+                <p class="desc">Searchable list of everything thieving chests, stalls and pickpocketing can get you.</p>
             </div>
             <div class="actions">
                 <a class="add" data-dir="thieving" href="#" title="Install the copy served from this homelab">Add to Alt1</a>
@@ -75,7 +76,7 @@
             </div>
         </li></ul>
 </main>
-<footer>Free and open source — <a href="https://github.com/GarryTheSquare/alt1Apps" style="color:var(--link-color)">source on GitHub</a>. Not affiliated with Jagex or RuneApps.</footer>
+<footer><a href="https://github.com/GarryTheSquare/alt1Apps" style="color:var(--link-color)">Source on GitHub</a>. Feel free to steal and present as your own work.</footer>
 <script>
   // Build absolute appconfig URLs from wherever this page was loaded, so the
   // alt1:// links resolve for every host that can reach it. Only the local

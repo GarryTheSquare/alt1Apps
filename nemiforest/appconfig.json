@@ -1,6 +1,6 @@
 {
 	"appName": "Nemi Forest",
-	"description": "Shows the image from the newest r/NemiForest post.",
+	"description": "Shows the image from the newest r/NemiForest post. It does currently not check if the status is live though, but this rarely happens for me",
 	"appUrl": "./index.html",
 	"configUrl": "./appconfig.json",
 	"iconUrl": "./icon.png",

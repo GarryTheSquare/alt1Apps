@@ -1,6 +1,6 @@
 {
 	"appName": "Thieving Tables",
-	"description": "Pickpocketing, stall and chest tables from the wiki, each with its full loot table.",
+	"description": "Searchable list of everything thieving chests, stalls and pickpocketing can get you.",
 	"appUrl": "./index.html",
 	"configUrl": "./appconfig.json",
 	"iconUrl": "./icon.png",

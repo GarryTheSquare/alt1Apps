@@ -1,6 +1,6 @@
 {
 	"appName": "Ritual Materials",
-	"description": "Necromancy ritual material calculator — inks, candles, focus objects, and the necroplasm rituals behind them.",
+	"description": "Necromancy ritual material calculator — inks, candles, focus objects and sub rituals if making everything from basic mats.",
 	"appUrl": "./index.html",
 	"configUrl": "./appconfig.json",
 	"iconUrl": "./icon.png",
