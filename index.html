@@ -41,6 +41,10 @@
      features, only worth installing when you're away from the tailnet. */
   .add.public { background:var(--body-light); }
   .add.public:hover { background:var(--body-mid); }
+  /* Same for the plain-browser link: usable without Alt1, but the capture
+     features won't be. */
+  .add.open { background:var(--body-light); }
+  .add.open:hover { background:var(--body-mid); }
   footer { max-width:760px; margin:1rem auto 0; color:#5a4a34; font-size:.8rem; }
   code { background:var(--body-light); padding:.05rem .3rem; border:1px solid var(--body-border); }
   .empty { color:#5a4a34; font-style:italic; }
@@ -49,7 +53,7 @@
 <body>
 <main>
   <h1>Alt1 Toolkit apps</h1>
-  <p class="sub">Click <strong>Add to Alt1</strong> to install a tool (opens the Alt1 client), or the name to open it in a browser. You need the free <a href="https://runeapps.org/alt1" style="color:var(--link-color)">Alt1 Toolkit</a> installed for the install links to do anything.</p>
+  <p class="sub">Click <strong>Add to Alt1</strong> to install a tool (opens the Alt1 client), or <strong>Open in browser</strong> to just view it as a web page. You need the free <a href="https://runeapps.org/alt1" style="color:var(--link-color)">Alt1 Toolkit</a> installed for the install links to do anything.</p>
   <h2 class="cat">Tools</h2>
   <ul>
         <li class="app">
@@ -61,6 +65,7 @@
             <div class="actions">
                 <a class="add" data-dir="metronome" href="#" title="Install the copy served from this homelab">Add to Alt1</a>
                 
+                <a class="add open" href="metronome/index.html" title="Open this app as a normal web page — no Alt1 install, but screen capture won't work">Open in browser</a>
             </div>
         </li>
         <li class="app">
@@ -72,6 +77,7 @@
             <div class="actions">
                 <a class="add" data-dir="nemiforest" href="#" title="Install the copy served from this homelab">Add to Alt1</a>
                 
+                <a class="add open" href="nemiforest/index.html" title="Open this app as a normal web page — no Alt1 install, but screen capture won't work">Open in browser</a>
             </div>
         </li></ul>
   <h2 class="cat">Calculators</h2>
@@ -85,6 +91,7 @@
             <div class="actions">
                 <a class="add" data-dir="archaeology" href="#" title="Install the copy served from this homelab">Add to Alt1</a>
                 
+                <a class="add open" href="archaeology/index.html" title="Open this app as a normal web page — no Alt1 install, but screen capture won't work">Open in browser</a>
             </div>
         </li>
         <li class="app">
@@ -96,6 +103,7 @@
             <div class="actions">
                 <a class="add" data-dir="ritualcalc" href="#" title="Install the copy served from this homelab">Add to Alt1</a>
                 
+                <a class="add open" href="ritualcalc/index.html" title="Open this app as a normal web page — no Alt1 install, but screen capture won't work">Open in browser</a>
             </div>
         </li>
         <li class="app">
@@ -107,6 +115,7 @@
             <div class="actions">
                 <a class="add" data-dir="thieving" href="#" title="Install the copy served from this homelab">Add to Alt1</a>
                 
+                <a class="add open" href="thieving/index.html" title="Open this app as a normal web page — no Alt1 install, but screen capture won't work">Open in browser</a>
             </div>
         </li></ul>
 </main>
