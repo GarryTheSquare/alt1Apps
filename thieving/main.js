@@ -15461,6 +15461,17 @@ module.exports = __webpack_require__.p + "thieving/index.html";
 
 /***/ },
 
+/***/ "./thieving/style.css"
+/*!****************************!*\
+  !*** ./thieving/style.css ***!
+  \****************************/
+(module, __unused_webpack_exports, __webpack_require__) {
+
+"use strict";
+module.exports = __webpack_require__.p + "thieving/style.css";
+
+/***/ },
+
 /***/ "canvas"
 /*!*************************!*\
   !*** external "canvas" ***!
@@ -17790,9 +17801,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var alt1__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! alt1 */ "../node_modules/alt1/dist/base/index.js");
 /* harmony import */ var alt1__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(alt1__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _index_html__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./index.html */ "./thieving/index.html");
-/* harmony import */ var _appconfig_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./appconfig.json */ "./thieving/appconfig.json");
-/* harmony import */ var _icon_png__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./icon.png */ "./thieving/icon.png");
-/* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./data */ "./thieving/data.ts");
+/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./style.css */ "./thieving/style.css");
+/* harmony import */ var _appconfig_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./appconfig.json */ "./thieving/appconfig.json");
+/* harmony import */ var _icon_png__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./icon.png */ "./thieving/icon.png");
+/* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./data */ "./thieving/data.ts");
 // Thieving Tables — the RuneScape wiki's pickpocketing, stall and chest tables,
 // with each entry's loot table folded in underneath it.
 //
@@ -17802,6 +17814,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 // No screen capture or overlay, so this app needs no Alt1 permissions; it just
 // registers for the "add app" flow.
+
 
 
 
@@ -17992,7 +18005,7 @@ const els = {
 };
 els.area.innerHTML = AREAS.map(a => `<option value="${esc(a.key)}">${esc(a.label)}</option>`).join("");
 els.source.innerHTML = `Copied from the <a href="${WIKI}/w/Thieving" target="_blank" rel="noreferrer">RuneScape Wiki</a>
-	on ${esc(_data__WEBPACK_IMPORTED_MODULE_4__.SOURCE_DATE)}, CC BY-NC-SA 3.0. Rarities marked ~ are the wiki's own estimates.`;
+	on ${esc(_data__WEBPACK_IMPORTED_MODULE_5__.SOURCE_DATE)}, CC BY-NC-SA 3.0. Rarities marked ~ are the wiki's own estimates.`;
 // ---------------------------------------------------------------------------
 // Filtering
 // ---------------------------------------------------------------------------
@@ -18011,7 +18024,7 @@ function haystack(e) {
 }
 function visible() {
     const terms = view.search.toLowerCase().split(/\s+/).filter(Boolean);
-    const out = _data__WEBPACK_IMPORTED_MODULE_4__.ENTRIES.filter(e => {
+    const out = _data__WEBPACK_IMPORTED_MODULE_5__.ENTRIES.filter(e => {
         if (!inTab(e, view.tab))
             return false;
         if (view.tab === "pickpocket" && view.area && e.category !== view.area)
@@ -18132,7 +18145,7 @@ function render() {
     els.tabs.querySelectorAll("button").forEach(b => b.classList.toggle("sel", b.dataset.tab === view.tab));
     els.subrow.style.display = view.tab === "pickpocket" ? "" : "none";
     const shown = visible();
-    els.count.textContent = `${shown.length} of ${_data__WEBPACK_IMPORTED_MODULE_4__.ENTRIES.filter(e => inTab(e, view.tab)).length}`;
+    els.count.textContent = `${shown.length} of ${_data__WEBPACK_IMPORTED_MODULE_5__.ENTRIES.filter(e => inTab(e, view.tab)).length}`;
     els.list.innerHTML = shown.length
         ? shown.map(renderRow).join("")
         : `<div class="empty">Nothing matches — clear the search or raise your level.</div>`;

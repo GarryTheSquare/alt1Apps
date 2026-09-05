@@ -44,6 +44,17 @@ module.exports = __webpack_require__.p + "nemiforest/index.html";
 
 /***/ },
 
+/***/ "./nemiforest/style.css"
+/*!******************************!*\
+  !*** ./nemiforest/style.css ***!
+  \******************************/
+(module, __unused_webpack_exports, __webpack_require__) {
+
+"use strict";
+module.exports = __webpack_require__.p + "nemiforest/style.css";
+
+/***/ },
+
 /***/ "canvas"
 /*!*************************!*\
   !*** external "canvas" ***!
@@ -2373,8 +2384,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var alt1__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! alt1 */ "../node_modules/alt1/dist/base/index.js");
 /* harmony import */ var alt1__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(alt1__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _index_html__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./index.html */ "./nemiforest/index.html");
-/* harmony import */ var _appconfig_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./appconfig.json */ "./nemiforest/appconfig.json");
-/* harmony import */ var _icon_png__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./icon.png */ "./nemiforest/icon.png");
+/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./style.css */ "./nemiforest/style.css");
+/* harmony import */ var _appconfig_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./appconfig.json */ "./nemiforest/appconfig.json");
+/* harmony import */ var _icon_png__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./icon.png */ "./nemiforest/icon.png");
 // Nemi Forest — shows the image from the newest post on r/NemiForest/new.
 // No screen capture or overlay, so this app needs no Alt1 permissions; it's a
 // plain webpage that registers with Alt1 for the "add app" flow.
@@ -2389,6 +2401,7 @@ __webpack_require__.r(__webpack_exports__);
 //      the only option in a public build
 //
 // See this app's README.md.
+
 
 
 

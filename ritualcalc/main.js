@@ -907,6 +907,17 @@ module.exports = __webpack_require__.p + "ritualcalc/index.html";
 
 /***/ },
 
+/***/ "./ritualcalc/style.css"
+/*!******************************!*\
+  !*** ./ritualcalc/style.css ***!
+  \******************************/
+(module, __unused_webpack_exports, __webpack_require__) {
+
+"use strict";
+module.exports = __webpack_require__.p + "ritualcalc/style.css";
+
+/***/ },
+
 /***/ "canvas"
 /*!*************************!*\
   !*** external "canvas" ***!
@@ -3236,16 +3247,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var alt1__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! alt1 */ "../node_modules/alt1/dist/base/index.js");
 /* harmony import */ var alt1__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(alt1__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _index_html__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./index.html */ "./ritualcalc/index.html");
-/* harmony import */ var _appconfig_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./appconfig.json */ "./ritualcalc/appconfig.json");
-/* harmony import */ var _icon_png__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./icon.png */ "./ritualcalc/icon.png");
-/* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./data */ "./ritualcalc/data.ts");
-/* harmony import */ var _calc__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./calc */ "./ritualcalc/calc.ts");
+/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./style.css */ "./ritualcalc/style.css");
+/* harmony import */ var _appconfig_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./appconfig.json */ "./ritualcalc/appconfig.json");
+/* harmony import */ var _icon_png__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./icon.png */ "./ritualcalc/icon.png");
+/* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./data */ "./ritualcalc/data.ts");
+/* harmony import */ var _calc__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./calc */ "./ritualcalc/calc.ts");
 // Ritual Materials — works out everything a queue of Necromancy rituals
 // consumes, and optionally traces the inks and candles back through the
 // necroplasm rituals that produce them, down to shop-bought basics.
 //
 // No screen capture or overlay, so this app needs no Alt1 permissions; it just
 // registers for the "add app" flow. See README.md.
+
 
 
 
@@ -3360,7 +3373,7 @@ const els = {
 // Option lists
 // ---------------------------------------------------------------------------
 function candleOptions() {
-    return _data__WEBPACK_IMPORTED_MODULE_4__.CANDLES.map(c => {
+    return _data__WEBPACK_IMPORTED_MODULE_5__.CANDLES.map(c => {
         const extra = c.shopPrice ? `${c.shopPrice}gp` : c.note || "crafted";
         return `<option value="${esc(c.name)}">${esc(c.name)} — ${c.durability.um}/${c.durability.ungael} uses, ${esc(extra)}</option>`;
     }).join("");
@@ -3368,18 +3381,18 @@ function candleOptions() {
 function fillStaticOptions() {
     els.candle.innerHTML = candleOptions();
     els.subCandle.innerHTML = candleOptions();
-    const freeGlyphOptions = `<option value="">none</option>` + _data__WEBPACK_IMPORTED_MODULE_4__.ALTERATION_GLYPHS
+    const freeGlyphOptions = `<option value="">none</option>` + _data__WEBPACK_IMPORTED_MODULE_5__.ALTERATION_GLYPHS
         .map(g => `<option value="${esc(g.name)}">${esc(g.name)}</option>`).join("");
     els.cape.innerHTML = freeGlyphOptions;
     els.impSoul.innerHTML = freeGlyphOptions;
     // Alteration glyph counters, two per row (see .grid in index.html).
-    els.altGrid.innerHTML = _data__WEBPACK_IMPORTED_MODULE_4__.ALTERATION_GLYPHS.map(g => `
+    els.altGrid.innerHTML = _data__WEBPACK_IMPORTED_MODULE_5__.ALTERATION_GLYPHS.map(g => `
 		<label data-glyph="${esc(g.name)}" title="Level ${g.level}">${esc(g.name)}</label>
 		<input type="number" min="0" max="11" step="1" data-glyph="${esc(g.name)}" value="0" />`).join("");
 }
 function fillRitualOptions() {
-    els.ritual.innerHTML = _data__WEBPACK_IMPORTED_MODULE_4__.CATEGORY_ORDER.map(cat => {
-        const rituals = _data__WEBPACK_IMPORTED_MODULE_4__.RITUALS.filter(r => r.category === cat && (setup.showOneOff || !r.oneOff));
+    els.ritual.innerHTML = _data__WEBPACK_IMPORTED_MODULE_5__.CATEGORY_ORDER.map(cat => {
+        const rituals = _data__WEBPACK_IMPORTED_MODULE_5__.RITUALS.filter(r => r.category === cat && (setup.showOneOff || !r.oneOff));
         if (!rituals.length)
             return "";
         const opts = rituals.map(r => `<option value="${r.id}">${esc(r.name)} (${r.level})${r.oneOff ? " ✦" : ""}</option>`).join("");
@@ -3387,7 +3400,7 @@ function fillRitualOptions() {
     }).join("");
     // Hiding the quest rituals can pull a selected one out from under us.
     for (const entry of setup.entries) {
-        const r = _data__WEBPACK_IMPORTED_MODULE_4__.RITUAL_BY_ID[entry.ritualId];
+        const r = _data__WEBPACK_IMPORTED_MODULE_5__.RITUAL_BY_ID[entry.ritualId];
         if (!r || (!setup.showOneOff && r.oneOff))
             entry.ritualId = newEntry().ritualId;
     }
@@ -3395,7 +3408,7 @@ function fillRitualOptions() {
 }
 function fillFocusOptions() {
     const entry = current();
-    const ritual = _data__WEBPACK_IMPORTED_MODULE_4__.RITUAL_BY_ID[entry.ritualId];
+    const ritual = _data__WEBPACK_IMPORTED_MODULE_5__.RITUAL_BY_ID[entry.ritualId];
     els.focus.innerHTML = ritual.focus.map((f, i) => {
         const qty = f.qty > 1 ? `${f.qty}× ` : "";
         return `<option value="${i}">${esc(qty + f.item)} → ${esc(f.output)}</option>`;
@@ -3483,10 +3496,10 @@ function subGlyphPlan() {
 }
 /** Resolve a stored entry into the runs the calculator needs. */
 function toQueueEntry(entry) {
-    const ritual = _data__WEBPACK_IMPORTED_MODULE_4__.RITUAL_BY_ID[entry.ritualId];
+    const ritual = _data__WEBPACK_IMPORTED_MODULE_5__.RITUAL_BY_ID[entry.ritualId];
     const focus = ritual.focus[Math.min(entry.focusIndex, ritual.focus.length - 1)];
     const loadout = loadoutFor(entry);
-    const out = (0,_calc__WEBPACK_IMPORTED_MODULE_5__.outputPerRitual)(focus, (0,_calc__WEBPACK_IMPORTED_MODULE_5__.perRitual)({ ritual, site: setup.site, candle: setup.candle, loadout }));
+    const out = (0,_calc__WEBPACK_IMPORTED_MODULE_6__.outputPerRitual)(focus, (0,_calc__WEBPACK_IMPORTED_MODULE_6__.perRitual)({ ritual, site: setup.site, candle: setup.candle, loadout }));
     const runs = entry.amountMode === "rituals"
         ? entry.amount
         : out > 0 ? Math.ceil(entry.amount / out) : 0;
@@ -3531,16 +3544,16 @@ function renderQueue(resolved) {
 }
 function renderSpots() {
     const entry = current();
-    const ritual = _data__WEBPACK_IMPORTED_MODULE_4__.RITUAL_BY_ID[entry.ritualId];
-    const tier = (0,_data__WEBPACK_IMPORTED_MODULE_4__.unlockedTier)(setup.level, setup.site);
-    const spare = (0,_calc__WEBPACK_IMPORTED_MODULE_5__.spareSpots)(ritual, setup.level, setup.site);
+    const ritual = _data__WEBPACK_IMPORTED_MODULE_5__.RITUAL_BY_ID[entry.ritualId];
+    const tier = (0,_data__WEBPACK_IMPORTED_MODULE_5__.unlockedTier)(setup.level, setup.site);
+    const spare = (0,_calc__WEBPACK_IMPORTED_MODULE_6__.spareSpots)(ritual, setup.level, setup.site);
     const used = Object.values(entry.alterations).reduce((a, b) => a + b, 0);
     els.spots.className = "spots" + (used > spare ? " over" : "");
     els.spots.textContent = `${used}/${Math.max(0, spare)} spare spots used on ${ritual.name} — ` +
-        `${_data__WEBPACK_IMPORTED_MODULE_4__.GLYPH_SPOTS[tier]} glyph spots on site, ${(0,_data__WEBPACK_IMPORTED_MODULE_4__.foundationalSpots)(ritual)} taken by the ritual itself`;
+        `${_data__WEBPACK_IMPORTED_MODULE_5__.GLYPH_SPOTS[tier]} glyph spots on site, ${(0,_data__WEBPACK_IMPORTED_MODULE_5__.foundationalSpots)(ritual)} taken by the ritual itself`;
     // Grey out glyphs the character can't draw yet.
     els.altGrid.querySelectorAll("label[data-glyph]").forEach(label => {
-        label.classList.toggle("locked", _data__WEBPACK_IMPORTED_MODULE_4__.GLYPHS[label.dataset.glyph].level > setup.level);
+        label.classList.toggle("locked", _data__WEBPACK_IMPORTED_MODULE_5__.GLYPHS[label.dataset.glyph].level > setup.level);
     });
 }
 function render() {
@@ -3561,7 +3574,7 @@ function render() {
     const resolved = setup.entries.map(toQueueEntry);
     renderQueue(resolved);
     // The focus-expansion toggle only means anything if some focus is makeable.
-    const makeable = resolved.filter(q => (0,_calc__WEBPACK_IMPORTED_MODULE_5__.focusIsMakeable)(q.focus));
+    const makeable = resolved.filter(q => (0,_calc__WEBPACK_IMPORTED_MODULE_6__.focusIsMakeable)(q.focus));
     els.expandFocusRow.style.display = makeable.length ? "" : "none";
     els.expandFocusLabel.textContent = makeable.length === 1
         ? `Make the ${makeable[0].focus.item.toLowerCase()} too`
@@ -3571,7 +3584,7 @@ function render() {
         els.results.innerHTML = `<p class="hint">Nothing to run — set an amount above.</p>`;
         return;
     }
-    const plan = (0,_calc__WEBPACK_IMPORTED_MODULE_5__.buildPlan)({
+    const plan = (0,_calc__WEBPACK_IMPORTED_MODULE_6__.buildPlan)({
         entries: resolved,
         site: setup.site,
         candle: setup.candle,
@@ -3587,7 +3600,7 @@ function render() {
 function renderEntry(e, solo) {
     const approx = e.ritual.ticksApprox ? "≈" : "";
     const speedNote = e.per.ticks !== e.ritual.ticks ? ` (from ${e.ritual.ticks})` : "";
-    const tier = (0,_data__WEBPACK_IMPORTED_MODULE_4__.ritualTier)(e.ritual);
+    const tier = (0,_data__WEBPACK_IMPORTED_MODULE_5__.ritualTier)(e.ritual);
     const parts = [`<div class="sect">${esc(e.ritual.name)} × ${int(e.runs)}</div>`];
     parts.push(`<div class="stats">
 		<div><span>Output each</span><span>${int(e.outputPerRitual)}</span></div>
@@ -3598,7 +3611,7 @@ function renderEntry(e, solo) {
 		<div><span>Time</span><span>${approx}${duration(e.seconds)}</span></div>
 		<div><span>Experience</span><span>${int(e.xp)}</span></div>
 		<div><span>Ectoplasm</span><span>+${int(e.ectoplasm)}</span></div>
-		${solo ? `<div><span>Ritual tier</span><span>${tier} — ${_data__WEBPACK_IMPORTED_MODULE_4__.LIGHT_SPOTS[tier]} lights</span></div>
+		${solo ? `<div><span>Ritual tier</span><span>${tier} — ${_data__WEBPACK_IMPORTED_MODULE_5__.LIGHT_SPOTS[tier]} lights</span></div>
 		<div><span>Wiki max</span><span>${e.focus.fixed ? "fixed" : int(e.focus.max) + " each"}</span></div>` : ""}
 	</div>`);
     parts.push(`<div class="hint">Makes ${esc(e.focus.output)} from ${esc(e.focus.item)}.` +
@@ -3724,7 +3737,7 @@ $("addritual").addEventListener("click", () => {
 });
 $("fillmax").addEventListener("click", () => {
     const entry = current();
-    entry.alterations = (0,_calc__WEBPACK_IMPORTED_MODULE_5__.fillMultiply)(_data__WEBPACK_IMPORTED_MODULE_4__.RITUAL_BY_ID[entry.ritualId], setup.level, setup.site, Number(els.fillTier.value));
+    entry.alterations = (0,_calc__WEBPACK_IMPORTED_MODULE_6__.fillMultiply)(_data__WEBPACK_IMPORTED_MODULE_5__.RITUAL_BY_ID[entry.ritualId], setup.level, setup.site, Number(els.fillTier.value));
     syncFormFromSetup();
     render();
 });

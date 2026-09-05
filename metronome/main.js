@@ -44,6 +44,17 @@ module.exports = __webpack_require__.p + "metronome/index.html";
 
 /***/ },
 
+/***/ "./metronome/style.css"
+/*!*****************************!*\
+  !*** ./metronome/style.css ***!
+  \*****************************/
+(module, __unused_webpack_exports, __webpack_require__) {
+
+"use strict";
+module.exports = __webpack_require__.p + "metronome/style.css";
+
+/***/ },
+
 /***/ "canvas"
 /*!*************************!*\
   !*** external "canvas" ***!
@@ -2373,8 +2384,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var alt1__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! alt1 */ "../node_modules/alt1/dist/base/index.js");
 /* harmony import */ var alt1__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(alt1__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _index_html__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./index.html */ "./metronome/index.html");
-/* harmony import */ var _appconfig_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./appconfig.json */ "./metronome/appconfig.json");
-/* harmony import */ var _icon_png__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./icon.png */ "./metronome/icon.png");
+/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./style.css */ "./metronome/style.css");
+/* harmony import */ var _appconfig_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./appconfig.json */ "./metronome/appconfig.json");
+/* harmony import */ var _icon_png__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./icon.png */ "./metronome/icon.png");
 // Visual Metronome — a 1..N counter for timing RS rotations.
 //
 // One window is one metronome: a big number that counts 1 → length on a
@@ -2390,6 +2402,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 // No screen capture or overlay, so this app needs no Alt1 permissions; it just
 // registers for the "add app" flow.
+
 
 
 

@@ -9743,6 +9743,17 @@ module.exports = __webpack_require__.p + "archaeology/index.html";
 
 /***/ },
 
+/***/ "./archaeology/style.css"
+/*!*******************************!*\
+  !*** ./archaeology/style.css ***!
+  \*******************************/
+(module, __unused_webpack_exports, __webpack_require__) {
+
+"use strict";
+module.exports = __webpack_require__.p + "archaeology/style.css";
+
+/***/ },
+
 /***/ "canvas"
 /*!*************************!*\
   !*** external "canvas" ***!
@@ -13850,8 +13861,8 @@ let __webpack_exports__ = {};
   \******************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   ARTEFACTS: () => (/* reexport safe */ _data__WEBPACK_IMPORTED_MODULE_6__.ARTEFACTS),
-/* harmony export */   COLLECTIONS: () => (/* reexport safe */ _data__WEBPACK_IMPORTED_MODULE_6__.COLLECTIONS),
+/* harmony export */   ARTEFACTS: () => (/* reexport safe */ _data__WEBPACK_IMPORTED_MODULE_7__.ARTEFACTS),
+/* harmony export */   COLLECTIONS: () => (/* reexport safe */ _data__WEBPACK_IMPORTED_MODULE_7__.COLLECTIONS),
 /* harmony export */   lib: () => (/* binding */ lib),
 /* harmony export */   store: () => (/* binding */ store)
 /* harmony export */ });
@@ -13860,14 +13871,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var alt1_chatbox__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! alt1/chatbox */ "../node_modules/alt1/dist/chatbox/index.js");
 /* harmony import */ var alt1_chatbox__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(alt1_chatbox__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _index_html__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./index.html */ "./archaeology/index.html");
-/* harmony import */ var _appconfig_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./appconfig.json */ "./archaeology/appconfig.json");
-/* harmony import */ var _icon_png__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./icon.png */ "./archaeology/icon.png");
-/* harmony import */ var _materials_data_png__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./materials.data.png */ "./archaeology/materials.data.png");
-/* harmony import */ var _materials_data_png__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_materials_data_png__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./data */ "./archaeology/data.ts");
-/* harmony import */ var _state__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./state */ "./archaeology/state.ts");
-/* harmony import */ var _matstorage__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./matstorage */ "./archaeology/matstorage.ts");
-/* harmony import */ var _chatwatch__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./chatwatch */ "./archaeology/chatwatch.ts");
+/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./style.css */ "./archaeology/style.css");
+/* harmony import */ var _appconfig_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./appconfig.json */ "./archaeology/appconfig.json");
+/* harmony import */ var _icon_png__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./icon.png */ "./archaeology/icon.png");
+/* harmony import */ var _materials_data_png__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./materials.data.png */ "./archaeology/materials.data.png");
+/* harmony import */ var _materials_data_png__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_materials_data_png__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./data */ "./archaeology/data.ts");
+/* harmony import */ var _state__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./state */ "./archaeology/state.ts");
+/* harmony import */ var _matstorage__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./matstorage */ "./archaeology/matstorage.ts");
+/* harmony import */ var _chatwatch__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./chatwatch */ "./archaeology/chatwatch.ts");
 // Archaeology Tracker — the wiki's training guide plus a tracker for which
 // artefacts you hold, what it costs to restore them, and which collections are
 // worth handing in.
@@ -13878,6 +13890,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 // The wiki data in data.ts is generated, never hand-edited; see
 // tools/build-data.py and README.md.
+
 
 
 
@@ -13911,7 +13924,7 @@ function load() {
     // a tracker saved before those keys existed would then mutate in place — so
     // each mutable field gets a fresh object here.
     return {
-        ..._state__WEBPACK_IMPORTED_MODULE_7__.EMPTY_STORE,
+        ..._state__WEBPACK_IMPORTED_MODULE_8__.EMPTY_STORE,
         ...saved,
         artefacts: saved.artefacts ?? {},
         materials: saved.materials ?? {},
@@ -13949,7 +13962,7 @@ function wikiLink(title, label = title) {
  * so the asterisk is all that is left to say the use exists.
  */
 function artefactName(name) {
-    const notes = _data__WEBPACK_IMPORTED_MODULE_6__.ARTEFACTS[name]?.nonconsuming ?? [];
+    const notes = _data__WEBPACK_IMPORTED_MODULE_7__.ARTEFACTS[name]?.nonconsuming ?? [];
     if (!notes.length)
         return wikiLink(name);
     const tip = `Also used, without being consumed, for: ${notes.join(" ")}`;
@@ -13975,7 +13988,7 @@ function table(rows) {
  * you may have restored one and still be sitting on the other's damaged half.
  */
 function pips(name, needed) {
-    const marks = (0,_state__WEBPACK_IMPORTED_MODULE_7__.copyStates)(store, name, needed)
+    const marks = (0,_state__WEBPACK_IMPORTED_MODULE_8__.copyStates)(store, name, needed)
         .map((state, i) => `<button class="pip ${state}" data-art="${esc(name)}" data-copy="${i}"
 					title="Copy ${i + 1} of ${needed}: ${STATE_LABEL[state]} — click to change"
 					>${STATE_MARK[state]}</button>`)
@@ -13996,10 +14009,10 @@ function wantedBy(artefact) {
  * join the Held column on the Materials tab.
  */
 function extras(name) {
-    const n = (0,_state__WEBPACK_IMPORTED_MODULE_7__.extraOf)(store, name);
+    const n = (0,_state__WEBPACK_IMPORTED_MODULE_8__.extraOf)(store, name);
     return `<input type="number" class="extra${n ? " some" : ""}" min="0" data-extra="${esc(name)}"
 		value="${n || ""}" placeholder="+0"
-		title="Spare damaged copies beyond the ${_data__WEBPACK_IMPORTED_MODULE_6__.ARTEFACTS[name]?.needed ?? 1} you need — counted under Held on the Materials tab" />`;
+		title="Spare damaged copies beyond the ${_data__WEBPACK_IMPORTED_MODULE_7__.ARTEFACTS[name]?.needed ?? 1} you need — counted under Held on the Materials tab" />`;
 }
 function artefactRow(name, artefact) {
     const tip = `${matSummary(artefact)} per copy${wantedBy(artefact) ? ` · wanted by ${wantedBy(artefact)}` : ""}`;
@@ -14012,12 +14025,12 @@ function artefactRow(name, artefact) {
 }
 // --- Training ---------------------------------------------------------------
 function renderTraining() {
-    const here = (0,_state__WEBPACK_IMPORTED_MODULE_7__.stepIndexFor)(_data__WEBPACK_IMPORTED_MODULE_6__.STEPS, level());
-    const html = _data__WEBPACK_IMPORTED_MODULE_6__.STEPS.map((step, i) => {
+    const here = (0,_state__WEBPACK_IMPORTED_MODULE_8__.stepIndexFor)(_data__WEBPACK_IMPORTED_MODULE_7__.STEPS, level());
+    const html = _data__WEBPACK_IMPORTED_MODULE_7__.STEPS.map((step, i) => {
         const cls = i === here ? "here" : i < here ? "done" : "";
         const hotspots = step.hotspots
             .map(h => {
-            const rows = (0,_state__WEBPACK_IMPORTED_MODULE_7__.artefactsAtHotspot)(h).map(([name, a]) => [
+            const rows = (0,_state__WEBPACK_IMPORTED_MODULE_8__.artefactsAtHotspot)(h).map(([name, a]) => [
                 String(a.level),
                 artefactName(name),
                 `${a.needed}`,
@@ -14046,18 +14059,18 @@ function renderTraining() {
  * spares included — the same set the Materials tab's Held column buys for.
  */
 function artefactSummary() {
-    const all = (0,_state__WEBPACK_IMPORTED_MODULE_7__.artefactsUpTo)(level());
+    const all = (0,_state__WEBPACK_IMPORTED_MODULE_8__.artefactsUpTo)(level());
     const counts = { missing: 0, damaged: 0, restored: 0 };
     let copies = 0;
     let spares = 0;
     let damagedXp = 0;
     for (const [name, a] of all) {
-        const c = (0,_state__WEBPACK_IMPORTED_MODULE_7__.countsOf)(store, name, a.needed);
+        const c = (0,_state__WEBPACK_IMPORTED_MODULE_8__.countsOf)(store, name, a.needed);
         counts.restored += c.restored;
         counts.damaged += c.damaged;
         counts.missing += c.missing;
         copies += a.needed;
-        const extra = (0,_state__WEBPACK_IMPORTED_MODULE_7__.extraOf)(store, name);
+        const extra = (0,_state__WEBPACK_IMPORTED_MODULE_8__.extraOf)(store, name);
         spares += extra;
         damagedXp += (c.damaged + extra) * a.xp;
     }
@@ -14071,17 +14084,17 @@ function artefactSummary() {
 }
 function renderArtefacts() {
     const needle = search.toLowerCase();
-    const all = (0,_state__WEBPACK_IMPORTED_MODULE_7__.artefactsUpTo)(level());
+    const all = (0,_state__WEBPACK_IMPORTED_MODULE_8__.artefactsUpTo)(level());
     const shown = all.filter(([name, a]) => {
         if (needle && !(name.toLowerCase().includes(needle) || a.digsite.toLowerCase().includes(needle)))
             return false;
         if (filter === "all")
             return true;
-        const counts = (0,_state__WEBPACK_IMPORTED_MODULE_7__.countsOf)(store, name, a.needed);
+        const counts = (0,_state__WEBPACK_IMPORTED_MODULE_8__.countsOf)(store, name, a.needed);
         // Filters match an artefact with *any* copy in that state — a partly
         // finished artefact still has work left on it. Spares count as damaged:
         // they're unrestored copies sitting in the bank.
-        const damaged = counts.damaged + (0,_state__WEBPACK_IMPORTED_MODULE_7__.extraOf)(store, name);
+        const damaged = counts.damaged + (0,_state__WEBPACK_IMPORTED_MODULE_8__.extraOf)(store, name);
         if (filter === "todo")
             return damaged > 0 || counts.missing > 0;
         if (filter === "damaged")
@@ -14118,7 +14131,7 @@ function renderArtefacts() {
 }
 // --- Materials --------------------------------------------------------------
 function renderMaterials() {
-    const needs = (0,_state__WEBPACK_IMPORTED_MODULE_7__.materialsNeeded)(store, level());
+    const needs = (0,_state__WEBPACK_IMPORTED_MODULE_8__.materialsNeeded)(store, level());
     // The scan and chat-watch controls stay put even with nothing left to
     // restore — you can still be stockpiling for the next level bracket.
     const controls = `<p class="muted"><label><input type="checkbox" id="watch" ${store.watch ? "checked" : ""} />
@@ -14131,7 +14144,7 @@ function renderMaterials() {
         return;
     }
     const rows = needs.map(n => {
-        const owned = (0,_state__WEBPACK_IMPORTED_MODULE_7__.ownedOf)(store, n.mat);
+        const owned = (0,_state__WEBPACK_IMPORTED_MODULE_8__.ownedOf)(store, n.mat);
         // Short against the materials you can act on now (Held) is the number
         // worth flagging — Missing is gated behind excavation anyway.
         const short = Math.max(0, n.damaged - owned);
@@ -14147,7 +14160,7 @@ function renderMaterials() {
     const total = needs.reduce((acc, n) => ({
         damaged: acc.damaged + n.damaged,
         missing: acc.missing + n.missing,
-        owned: acc.owned + (0,_state__WEBPACK_IMPORTED_MODULE_7__.ownedOf)(store, n.mat)
+        owned: acc.owned + (0,_state__WEBPACK_IMPORTED_MODULE_8__.ownedOf)(store, n.mat)
     }), { damaged: 0, missing: 0, owned: 0 });
     view("materials").innerHTML =
         `<p class="muted">To restore every artefact up to level ${level()} that you haven't restored yet.
@@ -14169,7 +14182,7 @@ function renderMaterials() {
 }
 // --- Collections ------------------------------------------------------------
 function renderCollections() {
-    const overview = (0,_state__WEBPACK_IMPORTED_MODULE_7__.collectionOverview)(store, level());
+    const overview = (0,_state__WEBPACK_IMPORTED_MODULE_8__.collectionOverview)(store, level());
     if (!overview.length) {
         view("collections").innerHTML =
             `<div class="empty">No first-time collections left at level ${level()}.</div>`;
@@ -14180,7 +14193,7 @@ function renderCollections() {
         .map(p => {
         const parts = p.parts
             .map(({ artefact, state }) => {
-            const needed = _data__WEBPACK_IMPORTED_MODULE_6__.ARTEFACTS[artefact]?.needed ?? 1;
+            const needed = _data__WEBPACK_IMPORTED_MODULE_7__.ARTEFACTS[artefact]?.needed ?? 1;
             return `<div class="art">
 						<span class="pill ${state}" title="The copy allocated to this collection">
 							${STATE_MARK[state]}</span>
@@ -14224,7 +14237,7 @@ function renderCollections() {
 // --- Gear -------------------------------------------------------------------
 function renderGear() {
     view("gear").innerHTML =
-        `<h3>Mattocks</h3>${table(_data__WEBPACK_IMPORTED_MODULE_6__.MATTOCKS)}<h3>Useful equipment</h3>${table(_data__WEBPACK_IMPORTED_MODULE_6__.EQUIPMENT)}`;
+        `<h3>Mattocks</h3>${table(_data__WEBPACK_IMPORTED_MODULE_7__.MATTOCKS)}<h3>Useful equipment</h3>${table(_data__WEBPACK_IMPORTED_MODULE_7__.EQUIPMENT)}`;
 }
 // --- Dispatch ---------------------------------------------------------------
 const RENDER = {
@@ -14291,9 +14304,9 @@ async function scanStorage() {
     status("Scanning…");
     try {
         if (!tpl)
-            tpl = (0,_matstorage__WEBPACK_IMPORTED_MODULE_8__.templates)(await (_materials_data_png__WEBPACK_IMPORTED_MODULE_5___default()));
+            tpl = (0,_matstorage__WEBPACK_IMPORTED_MODULE_9__.templates)(await (_materials_data_png__WEBPACK_IMPORTED_MODULE_6___default()));
         const img = alt1__WEBPACK_IMPORTED_MODULE_0__.captureHoldFullRs().toData();
-        const result = (0,_matstorage__WEBPACK_IMPORTED_MODULE_8__.scan)(img, tpl);
+        const result = (0,_matstorage__WEBPACK_IMPORTED_MODULE_9__.scan)(img, tpl);
         lastScan = result;
         const names = Object.keys(result.found);
         if (!names.length)
@@ -14342,10 +14355,10 @@ function readChat() {
         const lines = chat.read() ?? [];
         let gained = 0;
         for (const line of lines) {
-            const gain = (0,_chatwatch__WEBPACK_IMPORTED_MODULE_9__.parseGain)(line.text);
+            const gain = (0,_chatwatch__WEBPACK_IMPORTED_MODULE_10__.parseGain)(line.text);
             if (!gain)
                 continue;
-            store.materials[gain.mat] = (0,_state__WEBPACK_IMPORTED_MODULE_7__.ownedOf)(store, gain.mat) + gain.qty;
+            store.materials[gain.mat] = (0,_state__WEBPACK_IMPORTED_MODULE_8__.ownedOf)(store, gain.mat) + gain.qty;
             gained++;
         }
         if (gained) {
@@ -14407,10 +14420,10 @@ view("view").addEventListener("click", e => {
     const pip = target.closest("button.pip[data-art]");
     if (pip) {
         const name = pip.dataset.art;
-        const needed = _data__WEBPACK_IMPORTED_MODULE_6__.ARTEFACTS[name]?.needed ?? 1;
+        const needed = _data__WEBPACK_IMPORTED_MODULE_7__.ARTEFACTS[name]?.needed ?? 1;
         const copy = Number(pip.dataset.copy);
-        const current = (0,_state__WEBPACK_IMPORTED_MODULE_7__.copyStates)(store, name, needed)[copy];
-        store.artefacts[name] = (0,_state__WEBPACK_IMPORTED_MODULE_7__.setCopy)(store, name, needed, copy, (0,_state__WEBPACK_IMPORTED_MODULE_7__.nextState)(current));
+        const current = (0,_state__WEBPACK_IMPORTED_MODULE_8__.copyStates)(store, name, needed)[copy];
+        store.artefacts[name] = (0,_state__WEBPACK_IMPORTED_MODULE_8__.setCopy)(store, name, needed, copy, (0,_state__WEBPACK_IMPORTED_MODULE_8__.nextState)(current));
         save();
         render();
         return;
@@ -14461,7 +14474,7 @@ view("view").addEventListener("input", e => {
         // it. The summary line does read the spare count, so refresh just that.
         const name = target.dataset.extra;
         target.classList.toggle("some", Number(target.value) > 0);
-        store.artefacts[name] = (0,_state__WEBPACK_IMPORTED_MODULE_7__.setExtra)(store, name, Number(target.value));
+        store.artefacts[name] = (0,_state__WEBPACK_IMPORTED_MODULE_8__.setExtra)(store, name, Number(target.value));
         save();
         const summary = view("artefacts").querySelector("#art-summary");
         if (summary)
