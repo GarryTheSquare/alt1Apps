@@ -26,7 +26,7 @@ button:hover { background: #343434; }
 .controls { display: flex; align-items: center; gap: 5px; margin: 0 0 5px; }
 .controls .grow { flex: 1; }
 .controls label { color: #999; white-space: nowrap; }
-#level { width: 42px; text-align: right; }
+#level, #hours { width: 42px; text-align: right; }
 
 /* one thievable thing */
 .row { border: 1px solid #2b2b2b; border-radius: 3px; margin-bottom: 3px;
@@ -43,7 +43,10 @@ button:hover { background: #343434; }
 /* expected xp from one click — the whole auto-pickpocket streak */
 .head .pc { flex: 0 0 auto; font-variant-numeric: tabular-nums; color: #c8a96a;
 	min-width: 60px; text-align: right; }
-.row.locked .nm, .row.locked .lv, .row.locked .pc { color: #6b6b6b; }
+/* expected Thieving xp over the whole time in the hours box */
+.head .tot { flex: 0 0 auto; font-variant-numeric: tabular-nums; color: #8fce7f;
+	min-width: 46px; text-align: right; font-weight: 600; }
+.row.locked .nm, .row.locked .lv, .row.locked .pc, .row.locked .tot { color: #6b6b6b; }
 .tag { font-size: 10px; padding: 0 4px; border-radius: 6px; color: #bbb;
 	background: #303030; border: 1px solid #3a3a3a; white-space: nowrap; }
 .tag.f2p { color: #9cc; }
@@ -64,6 +67,14 @@ td.n, th.n { text-align: right; font-variant-numeric: tabular-nums;
 td.ic { width: 22px; padding: 0 2px 0 0; }
 td.ic img { display: block; max-width: 20px; max-height: 20px;
 	image-rendering: pixelated; }
+
+/* expected item counts for the trip, and the xp they process into */
+td.exp { color: #c8a96a; }
+td.dim { color: #666; }
+td.proc { color: #8fce7f; font-weight: 600; }
+table.processed td.from { color: #999; font-size: 11px; line-height: 1.35;
+	padding-top: 2px; padding-bottom: 3px; }
+table.processed th:last-child, table.processed td.from { width: 60%; }
 
 .grp { color: #a7d9a0; margin: 7px 0 0; font-weight: 600; }
 .grp:first-child { margin-top: 3px; }

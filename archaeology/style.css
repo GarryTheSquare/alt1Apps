@@ -86,7 +86,11 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 	border: 1px solid #3a3a3a; border-radius: 2px; padding: 1px 3px;
 	text-align: right; font-variant-numeric: tabular-nums; }
 .owned.some { color: #ddd; }
-.owned.short { border-color: #6a4040; }
+/* Missing column: red blocks a damaged artefact you hold, amber only future digs */
+.short-now { color: #e88; cursor: help; }
+.short-later { color: #d8c268; cursor: help; }
+.covered { color: #6c8; }
+tfoot td { background: #262626; }
 
 /* collections */
 .col { border: 1px solid #333; border-radius: 3px; margin-bottom: 5px; background: #1e1e1e; }

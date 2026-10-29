@@ -26,15 +26,22 @@
 					<option value="name">by name</option>
 					<option value="xp">by xp</option>
 					<option value="click">by xp per click</option>
+					<option value="hour">by xp per hour</option>
 				</select>
 			</div>
 
 			<div class="controls">
 				<label for="level">My level</label>
 				<input type="number" id="level" min="1" max="120" step="1" value="99" />
-				<label><input type="checkbox" id="onlyusable" /> hide what I can't do</label>
+				<label for="hours">Hours</label>
+				<input type="number" id="hours" min="0" max="24" step="0.5" value="1"
+					title="how long you intend to keep stealing; 0 hides the yields" />
 				<span class="spacer" style="flex:1"></span>
 				<label><input type="checkbox" id="icons" checked /> icons</label>
+			</div>
+
+			<div class="controls">
+				<label><input type="checkbox" id="onlyusable" /> hide what I can't do</label>
 			</div>
 
 			<div class="controls" id="subrow">

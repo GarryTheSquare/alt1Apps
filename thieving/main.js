@@ -15428,6 +15428,226 @@ const ENTRIES = [
 
 /***/ },
 
+/***/ "./thieving/processing.ts"
+/*!********************************!*\
+  !*** ./thieving/processing.ts ***!
+  \********************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   PROCESSING: () => (/* binding */ PROCESSING),
+/* harmony export */   SKILLS: () => (/* binding */ SKILLS)
+/* harmony export */ });
+// What thieving loot is worth once you *use* it.
+//
+// The thieving tables are full of raw skilling material — ores, stone spirits,
+// grimy herbs, charms, bones, logs — and the Thieving xp on the row says
+// nothing about that second, often much larger, pile of xp. This module maps
+// each such item to the xp it would hand over downstream.
+//
+// Rules this table follows, so the numbers mean one consistent thing:
+//
+// - **Secondary ingredients are free.** A super strength potion is counted at
+//   the full 125 xp for the kwuarm even though it also wants a limpwurt root,
+//   and a steel bar at the full 78 for the iron ore even though it also wants
+//   coal. Anything else would need a shopping list per row.
+// - **One chain per item per skill, the best one.** Where an ore feeds several
+//   bars, it gets the highest-tier bar it is a listed ingredient of.
+// - **An item may feed more than one skill** — an oak log is either a longbow
+//   or a plank, never both. The skill totals are therefore *alternatives*, not
+//   a sum; the UI says so.
+// - **Intermediates that only finish someone else's chain are worth nothing**,
+//   so nothing is counted twice: a bowstring's 80 xp belongs to the yew log it
+//   strings, a headless arrow's to the arrowhead that tips it.
+// - **Finished goods are terminal.** A Super attack (1) is not counted as the
+//   start of an extreme.
+//
+// Every number below is the RuneScape Wiki's, at the base rate: no outfits, no
+// portables, no bonfires, no altars, no Voice of Seren.
+const SKILLS = [
+    "Smithing",
+    "Herblore",
+    "Summoning",
+    "Cooking",
+    "Fletching",
+    "Construction",
+    "Prayer",
+    "Runecrafting",
+    "Woodcutting"
+];
+const M = {};
+const add = (item, ...recipes) => {
+    (M[item] || (M[item] = [])).push(...recipes);
+};
+/** "an oak longbow", "a yew longbow" — the via strings read as prose. */
+const a = (noun) => `${/^[aeiou]/i.test(noun) ? "an" : "a"} ${noun}`;
+const METALS = [
+    { ores: ["Copper ore"], spirit: "Copper stone spirit", xp: 16, bar: "bronze" },
+    { ores: ["Tin ore"], spirit: "Tin stone spirit", xp: 16, bar: "bronze" },
+    // Iron is worth more as the iron half of a steel bar (1 ore) than as an iron
+    // bar (2 ore), and coal more as the coal half of a mithril bar than a steel.
+    { ores: ["Iron ore"], spirit: "Iron stone spirit", xp: 78, bar: "steel" },
+    { ores: ["Coal"], spirit: "Coal stone spirit", xp: 125, bar: "mithril" },
+    { ores: ["Mithril ore"], spirit: "Mithril stone spirit", xp: 125, bar: "mithril" },
+    { ores: ["Adamantite ore"], spirit: "Adamantite stone spirit", xp: 177, bar: "adamant" },
+    { ores: ["Runite ore"], spirit: "Runite stone spirit", xp: 250, bar: "rune" },
+    { ores: ["Luminite"], spirit: "Luminite stone spirit", xp: 250, bar: "rune" },
+    { ores: ["Orichalcite ore"], spirit: "Orichalcite stone spirit", xp: 363, bar: "orikalkum" },
+    { ores: ["Drakolith"], spirit: "Drakolith stone spirit", xp: 363, bar: "orikalkum" },
+    { ores: ["Necrite ore"], spirit: "Necrite stone spirit", xp: 517, bar: "necronium" },
+    { ores: ["Phasmatite"], spirit: "Phasmatite stone spirit", xp: 517, bar: "necronium" },
+    { ores: ["Banite ore"], spirit: "Banite stone spirit", xp: 360.5, bar: "bane", per: 2 },
+    { ores: ["Light animica"], spirit: "Light animica stone spirit", xp: 1026, bar: "elder rune" },
+    { ores: ["Dark animica"], spirit: "Dark animica stone spirit", xp: 1026, bar: "elder rune" },
+    // Ten different primal ores make five bars, so one ore is half a bar.
+    { ores: [], spirit: "Primal stone spirit", xp: 703.1, bar: "primal", per: 2 },
+    // Smelted only; neither makes smithable equipment.
+    { ores: ["Silver ore"], spirit: "Silver stone spirit", xp: 3, bar: "silver" },
+    { ores: ["Gold ore"], spirit: "Gold stone spirit", xp: 7, bar: "gold" },
+    { ores: [], spirit: "Platinum stone spirit", xp: 33, bar: "platinum" }
+];
+const SMELT_ONLY = new Set(["silver", "gold", "platinum"]);
+for (const m of METALS) {
+    const via = SMELT_ONLY.has(m.bar) ? `smelt into a ${m.bar} bar` : `smelt + smith into ${m.bar} gear`;
+    for (const ore of m.ores)
+        add(ore, { skill: "Smithing", xp: m.xp, via });
+    // A spirit is one extra ore, named for it — "Luminite", "Banite ore", …
+    const ore = m.ores[0] || (m.bar === "primal" ? "primal ore" : `${m.bar} ore`);
+    if (m.spirit)
+        add(m.spirit, { skill: "Smithing", xp: m.xp, via: `one extra ${ore.toLowerCase()} — ${via}` });
+}
+// Bars that turn up ready-made: the smelting xp is already spent.
+add("Orikalkum bar", { skill: "Smithing", xp: 350, via: "smith into orikalkum gear" });
+add("Necronium bar", { skill: "Smithing", xp: 500, via: "smith into necronium gear" });
+// Seren corruption is smelted purely for the xp; it produces no bar.
+add("Corrupted ore", { skill: "Smithing", xp: 160, via: "smelt at a furnace (destroys the ore)" });
+const WOODS = [
+    { spirit: "Wood spirit", logs: "Logs", wc: 25, bow: { xp: 15, name: "longbow" }, plank: 29 },
+    { spirit: "Oak wood spirit", wc: 37.5, bow: { xp: 29.4, name: "oak longbow" }, plank: 60 },
+    { spirit: "Willow wood spirit", wc: 67.5, bow: { xp: 50, name: "willow longbow" } },
+    { spirit: "Teak wood spirit", wc: 85, plank: 93.75 },
+    { spirit: "Acadia wood spirit", wc: 80, bow: { xp: 116.6, name: "acadia longbow" } },
+    { spirit: "Mahogany wood spirit", wc: 125, plank: 140 },
+    { spirit: "Yew wood spirit", logs: "Yew logs", wc: 187.5, bow: { xp: 160, name: "yew longbow" } },
+    { spirit: "Magic wood spirit", logs: "Magic logs", wc: 365, bow: { xp: 183, name: "magic longbow" } },
+    { spirit: "Elder wood spirit", wc: 425, bow: { xp: 232.8, name: "elder longbow" } },
+    { spirit: "Eternal magic wood spirit", wc: 635, bow: { xp: 164.5, name: "eternal magic longbow" } }
+];
+for (const w of WOODS) {
+    for (const [item, lead] of [[w.spirit, "one extra log — "], [w.logs, ""]]) {
+        if (!item)
+            continue;
+        add(item, { skill: "Woodcutting", xp: w.wc, via: `${lead}what cutting it yourself would have paid` });
+        if (w.bow)
+            add(item, { skill: "Fletching", xp: w.bow.xp, via: `${lead}cut and string it into ${a(w.bow.name)}` });
+        if (w.plank)
+            add(item, { skill: "Construction", xp: w.plank, via: `${lead}saw into a plank, then build` });
+    }
+}
+add("Oak plank", { skill: "Construction", xp: 60, via: "oak larder (480 xp for 8)" });
+add("Teak plank", { skill: "Construction", xp: 93.75, via: "teak larder (750 xp for 8)" });
+// ---------------------------------------------------------------------------
+// Fletching — arrowheads and stocks
+//
+// Tipping a headless arrow is the whole of an arrow's remaining xp, so it is
+// counted on the arrowhead; headless arrows and bowstrings are therefore worth
+// nothing on their own, or the same xp would be counted twice.
+// ---------------------------------------------------------------------------
+for (const [head, xp] of [["Bronze", 1.3], ["Iron", 2.5], ["Steel", 5], ["Mithril", 7.5], ["Adamant", 10]]) {
+    add(`${head} arrowheads`, { skill: "Fletching", xp, via: `tip a headless arrow (${head.toLowerCase()} arrow)` });
+}
+add("Wooden stock", { skill: "Fletching", xp: 18, via: "limbs + string into a bronze crossbow" });
+// ---------------------------------------------------------------------------
+// Herblore — grimy herbs
+//
+// Clean the herb, then brew the best potion it makes. The unfinished step is
+// worth no xp on its own.
+// ---------------------------------------------------------------------------
+const HERBS = [
+    // [herb, clean xp, potion xp, potion]
+    ["guam", 2.5, 25, "attack potion"],
+    ["tarromin", 3.8, 40, "strength potion"],
+    ["marrentill", 5, 50, "antipoison"],
+    ["spirit weed", 7.8, 92, "summoning potion"],
+    ["kwuarm", 11.3, 125, "super strength"],
+    ["snapdragon", 11.8, 142.5, "super restore"],
+    ["cadantine", 12.5, 150, "super defence"],
+    ["lantadyme", 13.1, 172.5, "super magic potion"],
+    ["dwarf weed", 13.8, 162.5, "super ranging potion"]
+];
+for (const [herb, clean, potion, name] of HERBS) {
+    const grimy = "Grimy " + herb;
+    add(grimy, { skill: "Herblore", xp: clean + potion, via: `clean (${clean}) + brew ${a(name)} (${potion})` });
+}
+// ---------------------------------------------------------------------------
+// Cooking
+//
+// Base xp, cooked on a range — not the bonfire rate. Meat packs hold 50 noted
+// pieces, so they are worth fifty of them.
+// ---------------------------------------------------------------------------
+const COOK = [
+    ["Raw shrimps", 30, "shrimps"],
+    ["Raw anchovies", 30, "anchovies"],
+    ["Raw sardine", 40, "sardine"],
+    ["Raw herring", 50, "herring"],
+    ["Raw salmon", 90, "salmon"],
+    ["Raw tuna", 100, "tuna"],
+    ["Raw lobster", 120, "lobster"],
+    ["Raw shark", 210, "shark"],
+    // Nine tarpon go into one batch of fish oil, which pays 120.
+    ["Raw tarpon", 120 / 9, "a ninth of a fish oil"],
+    ["Raw beef", 30, "cooked meat"],
+    ["Raw bear meat", 30, "cooked meat"],
+    ["Raw rat meat", 30, "cooked meat"],
+    ["Raw chicken", 30, "cooked chicken"],
+    ["Raw potato", 15, "a baked potato"],
+    ["Grapes", 200, "a jug of wine"],
+    ["Raw beef pack", 30 * 50, "50 cooked meat"],
+    ["Raw rabbit pack", 30 * 50, "50 cooked rabbit"],
+    // Skewering is a free secondary, as ever.
+    ["Raw bird meat pack", 62 * 50, "50 roast bird meat"]
+];
+for (const [item, xp, what] of COOK)
+    add(item, { skill: "Cooking", xp, via: `cook into ${what}` });
+// ---------------------------------------------------------------------------
+// Prayer — bones and ashes, buried or scattered at the base rate.
+// (Plain "Ashes" are Necromancy/Herblore fodder and give no Prayer xp.)
+// ---------------------------------------------------------------------------
+for (const [item, xp] of [["Bones", 4.5], ["Big bones", 15], ["Dragon bones", 72], ["Accursed ashes", 12.5]]) {
+    add(item, { skill: "Prayer", xp, via: item.endsWith("ashes") ? "scatter" : "bury" });
+}
+// ---------------------------------------------------------------------------
+// Summoning — charms, at the best tradeable pouch each one makes.
+// ---------------------------------------------------------------------------
+for (const [charm, xp, pouch] of [
+    ["Gold charm", 87, "barker toad"],
+    ["Green charm", 154.4, "unicorn stallion"],
+    ["Crimson charm", 422.4, "pack yak"],
+    ["Blue charm", 783.2, "geyser titan"]
+]) {
+    add(charm, { skill: "Summoning", xp, via: `infuse ${a(pouch + " pouch")}` });
+}
+// ---------------------------------------------------------------------------
+// Runecrafting — talismans only, bound to a tiara at their altar.
+// Rune and pure essence are deliberately not counted: the xp there is the
+// runecrafting trip, not the loot.
+// ---------------------------------------------------------------------------
+const TIARAS = [
+    ["Air", 25], ["Water", 30], ["Earth", 32.5], ["Fire", 35], ["Body", 37.5],
+    ["Cosmic", 40], ["Chaos", 42.5], ["Nature", 45], ["Law", 47.5],
+    ["Death", 50], ["Blood", 52.5], ["Soul", 55]
+];
+for (const [rune, xp] of TIARAS) {
+    add(`${rune} talisman`, { skill: "Runecrafting", xp, via: `bind ${a(rune.toLowerCase() + " tiara")}` });
+}
+/** Loot item name → every way it turns into experience. */
+const PROCESSING = M;
+
+
+/***/ },
+
 /***/ "./thieving/appconfig.json"
 /*!*********************************!*\
   !*** ./thieving/appconfig.json ***!
@@ -17805,6 +18025,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _appconfig_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./appconfig.json */ "./thieving/appconfig.json");
 /* harmony import */ var _icon_png__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./icon.png */ "./thieving/icon.png");
 /* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./data */ "./thieving/data.ts");
+/* harmony import */ var _processing__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./processing */ "./thieving/processing.ts");
 // Thieving Tables — the RuneScape wiki's pickpocketing, stall and chest tables,
 // with each entry's loot table folded in underneath it.
 //
@@ -17814,6 +18035,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 // No screen capture or overlay, so this app needs no Alt1 permissions; it just
 // registers for the "add app" flow.
+
 
 
 
@@ -17836,6 +18058,7 @@ const DEFAULTS = {
     search: "",
     sort: "level",
     level: 99,
+    hours: 1,
     onlyUsable: false,
     icons: true,
     area: ""
@@ -17985,6 +18208,167 @@ function rarityColour(p) {
         return "#d89a6a";
     return "#d98080";
 }
+// ---------------------------------------------------------------------------
+// How much of it you get — rates, expected yields and what they process into
+//
+// Everything below hangs off the **hours** box. The per-steal numbers the wiki
+// gives say nothing about throughput: a chest worth 2,892 xp that comes back
+// every 18 seconds and a stall worth 1,404 xp that comes back every 3.6 are not
+// remotely the same trip, and neither is the pile of loot they leave you with.
+// ---------------------------------------------------------------------------
+/** A thieving action is 3 ticks, the same for pickpockets, stalls and chests. */
+const ACTION = 3 * 0.6;
+/** "18 seconds", "5 ticks (3s)", "0" → seconds. */
+function seconds(s) {
+    if (!s)
+        return null;
+    const paren = /\(\s*([\d.]+)\s*s\s*\)/.exec(s);
+    if (paren)
+        return parseFloat(paren[1]);
+    const sec = /([\d.]+)\s*second/i.exec(s);
+    if (sec)
+        return parseFloat(sec[1]);
+    const tick = /([\d.]+)\s*tick/i.exec(s);
+    if (tick)
+        return parseFloat(tick[1]) * 0.6;
+    const bare = /^\s*([\d.]+)\s*$/.exec(s);
+    return bare ? parseFloat(bare[1]) : null;
+}
+/**
+ * Successful steals per hour.
+ *
+ * Pickpocketing: a click is a streak, so the cycle is the streak, the attempt
+ * that ends it, and the stun you eat for it. Stalls and chests: one action,
+ * then you wait out the respawn — one stall, no world-hopping, no second thief.
+ * Neither models the Rogues' Castle / Arc / Prifddinas lock-outs, which cap how
+ * many clicks an hour holds.
+ */
+function actionsPerHour(e, level) {
+    if (PICKPOCKET.has(e.category)) {
+        const steals = stealsPerClick(e, level);
+        if (!steals)
+            return 0;
+        const stun = seconds(e.stun) ?? 3;
+        return (3600 / ((steals + 1) * ACTION + stun)) * steals;
+    }
+    if (levelOf(e) > level)
+        return 0;
+    return 3600 / ((seconds(e.respawn) ?? 0) + ACTION);
+}
+const thievingXp = (e, level, hours) => actionsPerHour(e, level) * hours * xpOf(e);
+/** "1", "1–3", "5–15 (noted)", "3; 20", "N/A" → the average number of items. */
+function avgQty(q) {
+    const s = q.replace(/\(noted\)/gi, "").replace(/,/g, "").trim();
+    if (!s || /n\/?a/i.test(s))
+        return 0;
+    // A semicolon is the wiki listing two fixed amounts, not a range.
+    let total = 0;
+    let n = 0;
+    for (const part of s.split(";")) {
+        const m = /([\d.]+)\s*(?:[–—-]\s*([\d.]+))?/.exec(part);
+        if (!m)
+            continue;
+        const lo = parseFloat(m[1]);
+        total += (lo + (m[2] ? parseFloat(m[2]) : lo)) / 2;
+        n++;
+    }
+    return n ? total / n : 0;
+}
+// Roughly a quarter of the loot rows are worded rather than numbered
+// ("Common", "Very rare"). Two readings, depending on the company they keep:
+//
+// - a group where *every* row is worded is a one-of-these roll — the chest
+//   tables are all like this — so the words become shares of a single roll;
+// - a worded row sitting among numbered ones is an extra, independent chance,
+//   and gets the middle of the band the wiki means by that word.
+//
+// Both are guesses, and every number they produce is marked ~ in the UI.
+const BAND_CHANCE = {
+    common: 1 / 8,
+    uncommon: 1 / 32,
+    rare: 1 / 128,
+    "very rare": 1 / 1000
+};
+const BAND_WEIGHT = { common: 1, uncommon: 0.3, rare: 0.08, "very rare": 0.02 };
+const band = (rarity) => rarity.trim().toLowerCase().replace(/^~/, "");
+/** Per-steal chance of each row of a group; null where the wiki says "Unknown". */
+function groupChances(g) {
+    const exact = g.drops.map(d => chance(d.rarity));
+    const worded = g.drops.map(d => BAND_WEIGHT[band(d.rarity)]);
+    const allWorded = exact.every(p => p === null) && worded.every(w => w !== undefined);
+    if (allWorded) {
+        const total = worded.reduce((a, w) => a + w, 0);
+        return worded.map(w => (total > 0 ? { p: w / total, approx: true } : null));
+    }
+    return g.drops.map((d, i) => {
+        if (exact[i] !== null)
+            return { p: exact[i], approx: d.rarity.trim().startsWith("~") };
+        const p = BAND_CHANCE[band(d.rarity)];
+        return p === undefined ? null : { p, approx: true };
+    });
+}
+/** Every item the trip is expected to leave you with, biggest pile first. */
+function yieldsOf(e, level, hours) {
+    const steals = actionsPerHour(e, level) * hours;
+    const out = new Map();
+    for (const g of e.loot) {
+        const chances = groupChances(g);
+        g.drops.forEach((d, i) => {
+            const c = chances[i];
+            if (!c)
+                return;
+            const count = steals * c.p * avgQty(d.qty);
+            if (!count)
+                return;
+            const y = out.get(d.item) || { item: d.item, count: 0, approx: false };
+            y.count += count;
+            y.approx = y.approx || c.approx;
+            out.set(d.item, y);
+        });
+    }
+    return [...out.values()].sort((a, b) => b.count - a.count);
+}
+/**
+ * The second pile of xp: what the raw material in the loot is worth once you
+ * use it. See processing.ts for what each item is counted as feeding, and why
+ * the skills are alternatives rather than a sum.
+ */
+function processedXp(yields) {
+    const by = new Map();
+    for (const y of yields) {
+        for (const recipe of _processing__WEBPACK_IMPORTED_MODULE_6__.PROCESSING[y.item] || []) {
+            const p = by.get(recipe.skill) || { skill: recipe.skill, xp: 0, approx: false, parts: [] };
+            const xp = y.count * recipe.xp;
+            p.xp += xp;
+            p.approx = p.approx || y.approx;
+            p.parts.push({ item: y.item, count: y.count, xp, recipe });
+            by.set(recipe.skill, p);
+        }
+    }
+    const out = [...by.values()];
+    for (const p of out)
+        p.parts.sort((a, b) => b.xp - a.xp);
+    // Fixed skill order, so the block doesn't reshuffle as you change the hours.
+    return out.sort((a, b) => _processing__WEBPACK_IMPORTED_MODULE_6__.SKILLS.indexOf(a.skill) - _processing__WEBPACK_IMPORTED_MODULE_6__.SKILLS.indexOf(b.skill));
+}
+/** 0.4, 12, 340, 8.2k — counts, where a fraction of an item still means something. */
+function amount(n) {
+    if (n >= 10000)
+        return (n / 1000).toFixed(0) + "k";
+    if (n >= 100)
+        return n.toFixed(0);
+    if (n >= 10)
+        return n.toFixed(1);
+    if (n >= 0.1)
+        return n.toFixed(2);
+    return n.toPrecision(2);
+}
+/** "1 hour", "30 min", "2.5 hours" — for labelling the columns. */
+function spell(hours) {
+    if (hours < 1)
+        return `${Math.round(hours * 60)} min`;
+    return `${hours} hour${hours === 1 ? "" : "s"}`;
+}
 const wikiUrl = (page) => `${WIKI}/w/${encodeURIComponent(page.replace(/ /g, "_"))}`;
 // ---------------------------------------------------------------------------
 // Element handles
@@ -17995,6 +18379,7 @@ const els = {
     search: $("search"),
     sort: $("sort"),
     level: $("level"),
+    hours: $("hours"),
     onlyUsable: $("onlyusable"),
     icons: $("icons"),
     subrow: $("subrow"),
@@ -18038,6 +18423,14 @@ function visible() {
             return a.name.localeCompare(b.name);
         if (view.sort === "xp")
             return xpOf(b) - xpOf(a) || a.name.localeCompare(b.name);
+        if (view.sort === "hour") {
+            // What an hour of it is actually worth, which is rarely what the
+            // per-steal xp suggests.
+            const d = thievingXp(b, view.level, 1) - thievingXp(a, view.level, 1);
+            if (d)
+                return d;
+            return xpOf(b) - xpOf(a) || a.name.localeCompare(b.name);
+        }
         if (view.sort === "click") {
             // Stalls and chests have no streak, so they fall back to raw xp.
             const d = xpPerClick(b, view.level) - xpPerClick(a, view.level);
@@ -18052,7 +18445,7 @@ function visible() {
 // ---------------------------------------------------------------------------
 // Rendering
 // ---------------------------------------------------------------------------
-function renderDrop(d) {
+function renderDrop(d, expected, steals) {
     const p = chance(d.rarity);
     const icon = view.icons && d.img
         ? `<img src="${esc(WIKI + d.img)}" alt="" loading="lazy" onerror="this.remove()">`
@@ -18060,22 +18453,63 @@ function renderDrop(d) {
     // The wiki's estimated rarities keep their ~; the percentage inherits it.
     const approx = d.rarity.trim().startsWith("~") ? "~" : "";
     const pct = p === null ? "" : `<span style="color:${rarityColour(p)}">${approx}${percent(p)}</span>`;
+    // How many of this you walk away with, for the time in the hours box.
+    let exp = "";
+    if (view.hours > 0) {
+        const n = expected ? steals * expected.p * avgQty(d.qty) : 0;
+        exp = !expected
+            ? `<td class="n dim" title="the wiki gives no rarity for this row">?</td>`
+            : `<td class="n exp">${expected.approx ? "~" : ""}${amount(n)}</td>`;
+    }
     return `<tr>
 		<td class="ic">${icon}</td>
 		<td>${esc(d.item)}</td>
 		<td class="n">${esc(d.qty)}</td>
 		<td class="n" title="${esc(d.rarity)}">${pct || esc(d.rarity)}</td>
+		${exp}
 	</tr>`;
 }
-function renderLoot(groups) {
+function renderLoot(groups, steals) {
     if (!groups.length)
         return `<div class="hint">The wiki lists no loot table for this one.</div>`;
+    const expHead = view.hours > 0
+        ? `<th class="n" title="expected number in ${esc(spell(view.hours))} of stealing">In ${esc(spell(view.hours))}</th>`
+        : "";
     return groups.map(g => {
-        const rows = g.drops.map(renderDrop).join("");
+        const chances = groupChances(g);
+        const rows = g.drops.map((d, i) => renderDrop(d, chances[i], steals)).join("");
         return (g.group ? `<div class="grp">${esc(g.group)}</div>` : "") +
-            `<table><thead><tr><th colspan="2">Item</th><th class="n">Qty</th><th class="n">Chance</th></tr></thead>
+            `<table><thead><tr><th colspan="2">Item</th><th class="n">Qty</th><th class="n">Chance</th>${expHead}</tr></thead>
 			<tbody>${rows}</tbody></table>`;
     }).join("");
+}
+/**
+ * The second xp block: what the raw material in the haul is worth if you take
+ * it somewhere. Skills are listed side by side rather than added up, because an
+ * oak log is a longbow *or* a plank, never both.
+ */
+function renderProcessed(e) {
+    if (view.hours <= 0)
+        return "";
+    const skills = processedXp(yieldsOf(e, view.level, view.hours));
+    if (!skills.length)
+        return "";
+    const rows = skills.map(p => {
+        const from = p.parts
+            .map(part => `${amount(part.count)}× ${esc(part.item)} — ${esc(part.recipe.via)} (${compact(part.xp)} xp)`)
+            .join("<br>");
+        return `<tr>
+			<td>${esc(p.skill)}</td>
+			<td class="n proc">${p.approx ? "~" : ""}${compact(p.xp)}</td>
+			<td class="from">${from}</td>
+		</tr>`;
+    }).join("");
+    return `<div class="grp">If you process the haul</div>
+		<table class="processed"><thead><tr><th>Skill</th><th class="n">XP</th><th>From</th></tr></thead>
+		<tbody>${rows}</tbody></table>
+		<div class="hint">One skill <em>or</em> another, not added together — the same log is a
+			bow or a plank. Secondary ingredients are assumed free, and no outfit, portable,
+			bonfire or altar bonus is applied.</div>`;
 }
 function renderFacts(e) {
     const facts = [["Level", e.level], ["XP", e.xp]];
@@ -18084,6 +18518,17 @@ function renderFacts(e) {
         // Room to spell it out here, unlike in the row header.
         facts.push(["XP / click", Math.round(xpOf(e) * steals).toLocaleString()]);
         facts.push(["Steals / click", steals.toFixed(1)]);
+    }
+    const rate = actionsPerHour(e, view.level);
+    if (rate) {
+        facts.push(["Steals / hour", Math.round(rate).toLocaleString()]);
+        if (view.hours > 0) {
+            // At exactly one hour the trip total is the rate again; don't say it twice.
+            if (view.hours !== 1) {
+                facts.push([`Steals / ${spell(view.hours)}`, Math.round(rate * view.hours).toLocaleString()]);
+            }
+            facts.push([`Thieving xp / ${spell(view.hours)}`, Math.round(rate * view.hours * xpOf(e)).toLocaleString()]);
+        }
     }
     if (e.respawn)
         facts.push(["Respawn", e.respawn]);
@@ -18125,17 +18570,23 @@ function renderRow(e) {
     const click = view.tab === "pickpocket"
         ? `<span class="pc" title="expected xp for one click, at level ${view.level}">${perClick ? compact(perClick) + "/click" : "&mdash;"}</span>`
         : "";
+    // The number the hours box is really for: what the whole trip is worth.
+    const trip = view.hours > 0 ? thievingXp(e, view.level, view.hours) : 0;
+    const total = view.hours > 0
+        ? `<span class="tot" title="expected Thieving xp in ${esc(spell(view.hours))} at level ${view.level}">${trip ? compact(trip) : "&mdash;"}</span>`
+        : "";
     return `<div class="row${isOpen ? " open" : ""}${locked ? " locked" : ""}" data-page="${esc(e.page)}">
 		<div class="head">
 			<span class="nm">${esc(e.name)}</span>
 			${members}${tag}
 			<span class="lv">${esc(e.level)}</span>
 			<span class="xp">${esc(e.xp)} xp</span>
-			${click}
+			${click}${total}
 		</div>
 		${isOpen ? `<div class="body">
 			${renderFacts(e)}
-			${renderLoot(e.loot)}
+			${renderLoot(e.loot, actionsPerHour(e, view.level) * view.hours)}
+			${renderProcessed(e)}
 			<div class="hint">${drops} loot ${drops === 1 ? "row" : "rows"} &middot;
 				<a href="${esc(wikiUrl(e.page))}" target="_blank" rel="noreferrer">wiki page</a></div>
 		</div>` : ""}
@@ -18157,6 +18608,7 @@ function readForm() {
     view.search = els.search.value;
     view.sort = els.sort.value;
     view.level = Math.min(120, Math.max(1, Math.floor(Number(els.level.value) || 1)));
+    view.hours = Math.min(24, Math.max(0, Number(els.hours.value) || 0));
     view.onlyUsable = els.onlyUsable.checked;
     view.icons = els.icons.checked;
     view.area = els.area.value;
@@ -18167,6 +18619,7 @@ function syncForm() {
     els.search.value = view.search;
     els.sort.value = view.sort;
     els.level.value = String(view.level);
+    els.hours.value = String(view.hours);
     els.onlyUsable.checked = view.onlyUsable;
     els.icons.checked = view.icons;
     els.area.value = view.area;
