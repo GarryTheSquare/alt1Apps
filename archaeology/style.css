@@ -54,6 +54,8 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .step.here > summary { background: #2f4a35; }
 .step.done > summary { color: #777; }
 .range { font-weight: 600; }
+.step > summary .tick { margin: 0 4px 0 0; vertical-align: -2px; }
+.lvltag { color: #d8c268; font-size: 11px; margin-left: 4px; }
 
 /* artefact rows */
 .filters { display: flex; gap: 4px; margin-bottom: 6px; }

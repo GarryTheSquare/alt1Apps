@@ -10168,7 +10168,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   ownedOf: () => (/* binding */ ownedOf),
 /* harmony export */   setCopy: () => (/* binding */ setCopy),
 /* harmony export */   setExtra: () => (/* binding */ setExtra),
-/* harmony export */   stepIndexFor: () => (/* binding */ stepIndexFor)
+/* harmony export */   stepIndexFor: () => (/* binding */ stepIndexFor),
+/* harmony export */   trainingProgress: () => (/* binding */ trainingProgress)
 /* harmony export */ });
 /* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./data */ "./archaeology/data.ts");
 // Pure logic for the Archaeology tracker — deliberately DOM-free so it can be
@@ -10183,7 +10184,10 @@ const EMPTY_STORE = {
     materials: {},
     completed: {},
     tab: "training",
-    watch: false
+    watch: false,
+    hideCovered: false,
+    ignoreMissing: false,
+    steps: {}
 };
 /** How many of a material the player has banked. */
 function ownedOf(store, mat) {
@@ -10259,13 +10263,14 @@ function materialsNeeded(store, level) {
     return [...totals.values()].sort((a, b) => b.damaged + b.missing - (a.damaged + a.missing) || a.mat.localeCompare(b.mat));
 }
 function balanceOf(store, need) {
-    const needed = need.damaged + need.missing;
+    const toDig = store.ignoreMissing ? 0 : need.missing;
+    const needed = need.damaged + toDig;
     const stored = ownedOf(store, need.mat);
     return {
         mat: need.mat,
         needed,
         held: need.damaged,
-        toDig: need.missing,
+        toDig,
         stored,
         missing: Math.max(0, needed - stored)
     };
@@ -10274,6 +10279,7 @@ function balanceOf(store, need) {
 function materialBalance(store, level) {
     return materialsNeeded(store, level)
         .map(n => balanceOf(store, n))
+        .filter(b => b.needed > 0)
         .sort((a, b) => b.missing - a.missing || b.needed - a.needed || a.mat.localeCompare(b.mat));
 }
 /**
@@ -10354,6 +10360,23 @@ function stepIndexFor(steps, level) {
         if (steps[i].from <= level)
             index = i;
     return index;
+}
+/**
+ * Where you are in the training guide. Level alone puts you at the step it
+ * reaches, which overshoots when you've out-levelled your progress through the
+ * guide — so once any step is ticked, the ticks take over: you're at the first
+ * step not ticked, capped at your level's step (a step you aren't high enough
+ * level for can't be the next one to do). With nothing ticked, it's level
+ * alone and everything below counts as done, as before ticking existed.
+ */
+function trainingProgress(steps, level, ticked) {
+    const atLevel = stepIndexFor(steps, level);
+    const any = steps.some(s => ticked[s.range]);
+    if (!any)
+        return { here: atLevel, atLevel, done: steps.map((_, i) => i < atLevel) };
+    const done = steps.map(s => !!ticked[s.range]);
+    const first = done.indexOf(false);
+    return { here: first === -1 ? atLevel : Math.min(first, atLevel), atLevel, done };
 }
 /**
  * Hotspot names in the training guide don't always match the artefact data
@@ -14591,7 +14614,8 @@ function load() {
         ...saved,
         artefacts: saved.artefacts ?? {},
         materials: saved.materials ?? {},
-        completed: saved.completed ?? {}
+        completed: saved.completed ?? {},
+        steps: saved.steps ?? {}
     };
 }
 const tab = () => (RENDER[store.tab] ? store.tab : "training");
@@ -14687,10 +14711,25 @@ function artefactRow(name, artefact) {
 	</div>`;
 }
 // --- Training ---------------------------------------------------------------
+function trainingHeader(here, atLevel) {
+    const ticked = _data__WEBPACK_IMPORTED_MODULE_7__.STEPS.filter(s => store.steps[s.range]).length;
+    const behind = atLevel - here;
+    const where = behind > 0
+        ? `Your level reaches ${esc(_data__WEBPACK_IMPORTED_MODULE_7__.STEPS[atLevel].range)}, but you're on
+			<strong>${esc(_data__WEBPACK_IMPORTED_MODULE_7__.STEPS[here].range)}</strong> — ${behind} step${behind === 1 ? "" : "s"} behind.`
+        : ticked
+            ? `You're on <strong>${esc(_data__WEBPACK_IMPORTED_MODULE_7__.STEPS[here].range)}</strong>.`
+            : `Tick the steps you've done if your progress has fallen behind your level.`;
+    const buttons = (atLevel > 0 ? ` <button id="steps-to-level" title="Tick every step before the one your level reaches">tick all below my level</button>` : "") +
+        (ticked ? ` <button id="steps-reset">untick all</button>` : "");
+    return `<p class="muted">${where}${buttons}</p>`;
+}
 function renderTraining() {
-    const here = (0,_state__WEBPACK_IMPORTED_MODULE_8__.stepIndexFor)(_data__WEBPACK_IMPORTED_MODULE_7__.STEPS, level());
+    // A re-render would collapse whatever you'd opened; keep those open.
+    const open = new Set([...view("training").querySelectorAll("details.step[open]")].map(d => d.dataset.step));
+    const { here, atLevel, done } = (0,_state__WEBPACK_IMPORTED_MODULE_8__.trainingProgress)(_data__WEBPACK_IMPORTED_MODULE_7__.STEPS, level(), store.steps);
     const html = _data__WEBPACK_IMPORTED_MODULE_7__.STEPS.map((step, i) => {
-        const cls = i === here ? "here" : i < here ? "done" : "";
+        const cls = i === here ? "here" : done[i] ? "done" : "";
         const hotspots = step.hotspots
             .map(h => {
             const rows = (0,_state__WEBPACK_IMPORTED_MODULE_8__.artefactsAtHotspot)(h).map(([name, a]) => [
@@ -14707,12 +14746,16 @@ function renderTraining() {
                 table([["Lvl", "Artefact", "Keep", "XP", "Chronotes", "Materials (each)"], ...rows]));
         })
             .join("");
-        return `<details class="step ${cls}" ${i === here ? "open" : ""}>
-			<summary><span class="range">${esc(step.range)}</span></summary>
+        const isOpen = i === here || open.has(step.range);
+        const levelTag = i === atLevel && atLevel !== here ? ` <span class="lvltag">your level</span>` : "";
+        return `<details class="step ${cls}" data-step="${esc(step.range)}" ${isOpen ? "open" : ""}>
+			<summary><input type="checkbox" class="tick" data-step-done="${esc(step.range)}"
+				${store.steps[step.range] ? "checked" : ""} title="Mark this step as done" />
+				<span class="range">${esc(step.range)}</span>${levelTag}</summary>
 			<div class="body">${step.html}${hotspots}</div>
 		</details>`;
     }).join("");
-    view("training").innerHTML = html;
+    view("training").innerHTML = trainingHeader(here, atLevel) + html;
     view("training").querySelector(".step.here")?.scrollIntoView({ block: "nearest" });
 }
 // --- Artefacts --------------------------------------------------------------
@@ -14801,23 +14844,44 @@ function renderMaterials() {
 			Watch the chat box and add materials as they drop</label>
 			· <button id="mat-scan">scan storage</button></p>` +
         `<details id="scan-debug"><summary class="muted">Last scan detail</summary>${scanReport()}</details>`;
+    // The view options stay put too: an empty table is often their doing, and
+    // they have to be there to be unticked.
+    const options = `<p class="muted">
+		<label title="Only count materials for the damaged artefacts already in your bank, spares included"
+			><input type="checkbox" id="ignore-missing" ${store.ignoreMissing ? "checked" : ""} />
+			Ignore missing artefacts</label>
+		· <label><input type="checkbox" id="hide-covered" ${store.hideCovered ? "checked" : ""} />
+			Hide covered materials</label></p>`;
     if (!rows.length) {
-        view("materials").innerHTML =
-            `<div class="empty">Nothing left to restore at level ${level()}.</div>` + controls;
+        const why = store.ignoreMissing
+            ? "None of the damaged artefacts in your bank need materials."
+            : `Nothing left to restore at level ${level()}.`;
+        view("materials").innerHTML = `<div class="empty">${why}</div>` + controls + options;
         return;
     }
+    // Hiding only drops rows from the table; the totals and summary still count
+    // every material, so ticking the box never changes the numbers.
     const total = (0,_state__WEBPACK_IMPORTED_MODULE_8__.balanceTotals)(rows);
-    view("materials").innerHTML =
-        `<p class="muted">To restore every artefact up to level ${level()} that you haven't restored yet.
+    const shown = store.hideCovered ? rows.filter(r => r.missing) : rows;
+    const body = shown.length
+        ? shown.map(matRow).join("")
+        : `<tr><td colspan="4" class="empty">Every material is covered.</td></tr>`;
+    const scope = store.ignoreMissing
+        ? `To restore the damaged artefacts already in your bank, spares included — artefacts you
+		still have to dig up are left out. <strong>Needed</strong> is what those cost.`
+        : `To restore every artefact up to level ${level()} that you haven't restored yet.
 		<strong>Needed</strong> is the full cost — damaged copies in your bank (spares included) and the
-		ones still to dig up alike; hover a number for the split. <strong>Stored</strong> is what you've
+		ones still to dig up alike; hover a number for the split.`;
+    view("materials").innerHTML =
+        `<p class="muted">${scope} <strong>Stored</strong> is what you've
 		banked: type it in, scan your Material Storage window, or let the chat watch keep it current.
 		<strong>Missing</strong> is what's left to get.</p>` +
             controls +
+            options +
             `<p class="muted" id="mat-summary">${matSummaryLine(rows)}</p>` +
             `<div class="wrap"><table id="mat-table"><thead><tr>
 			<th>Material</th><th class="num">Needed</th><th class="num">Stored</th><th class="num">Missing</th>
-		</tr></thead><tbody>${rows.map(matRow).join("")}</tbody>
+		</tr></thead><tbody>${body}</tbody>
 		<tfoot><tr>
 			<td><strong>Total</strong></td>
 			<td class="num"><strong data-total="needed">${num(total.needed)}</strong></td>
@@ -14848,7 +14912,9 @@ function missingCell(r) {
     return `<span class="${blocking ? "short-now" : "short-later"}" title="${esc(tip)}">${num(r.missing)}</span>`;
 }
 function matRow(r) {
-    const split = `${num(r.held)} for damaged artefacts in your bank, ${num(r.toDig)} for ones still to dig up`;
+    const split = store.ignoreMissing
+        ? `${num(r.held)} for damaged artefacts in your bank (ones still to dig up ignored)`
+        : `${num(r.held)} for damaged artefacts in your bank, ${num(r.toDig)} for ones still to dig up`;
     return `<tr data-row="${esc(r.mat)}">
 		<td>${wikiLink(r.mat)}</td>
 		<td class="num" title="${esc(split)}">${num(r.needed)}</td>
@@ -15137,6 +15203,35 @@ view("view").addEventListener("click", e => {
         render();
         return;
     }
+    const stepTick = target.closest("input[data-step-done]");
+    if (stepTick) {
+        // Inside a <summary> again: don't let the click toggle the step open.
+        e.preventDefault();
+        const range = stepTick.dataset.stepDone;
+        if (store.steps[range])
+            delete store.steps[range];
+        else {
+            store.steps[range] = true;
+            // Done with it: fold it away rather than keep it open past the re-render.
+            stepTick.closest("details")?.removeAttribute("open");
+        }
+        save();
+        renderTraining();
+        return;
+    }
+    if (target.id === "steps-to-level") {
+        const atLevel = (0,_state__WEBPACK_IMPORTED_MODULE_8__.stepIndexFor)(_data__WEBPACK_IMPORTED_MODULE_7__.STEPS, level());
+        _data__WEBPACK_IMPORTED_MODULE_7__.STEPS.slice(0, atLevel).forEach(s => (store.steps[s.range] = true));
+        save();
+        renderTraining();
+        return;
+    }
+    if (target.id === "steps-reset") {
+        store.steps = {};
+        save();
+        renderTraining();
+        return;
+    }
     if (target.id === "col-reset") {
         store.completed = {};
         save();
@@ -15145,6 +15240,16 @@ view("view").addEventListener("click", e => {
     }
     if (target.id === "mat-scan") {
         scanStorage();
+        return;
+    }
+    if (target.id === "hide-covered" || target.id === "ignore-missing") {
+        const on = target.checked;
+        if (target.id === "hide-covered")
+            store.hideCovered = on;
+        else
+            store.ignoreMissing = on;
+        save();
+        renderMaterials();
         return;
     }
     if (target.id === "watch")
