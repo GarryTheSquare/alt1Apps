@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Ore to Smithing XP</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<header>
+		<div class="title">
+			<h1>Ore &rarr; Smithing XP</h1>
+		</div>
+		<div id="total" class="big"></div>
+		<div id="total-sub" class="muted"></div>
+	</header>
+
+	<div id="addapp" class="banner" hidden>
+		Not running inside Alt1. <a id="addapp-link" href="#">Add this app to Alt1</a>
+	</div>
+
+	<main>
+		<nav id="views" class="segmented" role="tablist">
+			<button data-view="ores" class="on">Ores</button>
+			<button data-view="results">Breakdown</button>
+			<button data-view="mods" title="Modifiers">&#9881;</button>
+		</nav>
+
+		<section id="view-ores" class="view"></section>
+		<section id="view-results" class="view" hidden></section>
+		<section id="view-mods" class="view" hidden></section>
+	</main>
+
+	<script src="data.js"></script>
+	<script src="app.js"></script>
+</body>
+</html>

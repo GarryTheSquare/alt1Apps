@@ -1,0 +1,13 @@
+{
+	"appName": "Ore to Smithing XP",
+	"description": "Enter raw ores and stone spirits; shows the Smithing XP they are worth once smelted and forged, with all the XP and extra-bar modifiers from the wiki Smithing calculator.",
+	"appUrl": "./index.html",
+	"configUrl": "./appconfig.json",
+	"iconUrl": "./icon.png",
+	"defaultWidth": 380,
+	"defaultHeight": 620,
+	"minWidth": 280,
+	"minHeight": 300,
+	"maxWidth": 900,
+	"maxHeight": 1200
+}
