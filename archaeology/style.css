@@ -82,6 +82,20 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 	font: inherit; border: 1px solid #3a3a3a; border-radius: 2px;
 	padding: 1px 3px; text-align: center; }
 .art .extra.some { color: #d8c268; background: #4a442f; border-color: #605a3d; }
+.art .extra.restored.some { color: #8fdca0; background: #2f4a35; border-color: #3d6045; }
+
+/* Artefacts tab: hide-completed toggle, collapse/expand, one fold per dig site */
+.art-opts { display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
+.art-opts label { display: flex; align-items: center; gap: 3px; cursor: pointer; }
+.art-opts input { margin: 0; }
+.site > summary { cursor: pointer; list-style: none; }
+.site > summary::-webkit-details-marker { display: none; }
+.site > summary h3 { display: inline; }
+.site > summary::before { content: "▾ "; color: #666; }
+.site:not([open]) > summary::before { content: "▸ "; }
+.site { margin: 12px 0 5px; }
+.site:first-of-type { margin-top: 0; }
+.site[open] > summary { display: block; margin-bottom: 5px; }
 
 /* owned-materials box on the Materials tab */
 .owned { width: 56px; background: #2a2a2a; color: #777; font: inherit;

@@ -10166,8 +10166,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   materialsNeeded: () => (/* binding */ materialsNeeded),
 /* harmony export */   nextState: () => (/* binding */ nextState),
 /* harmony export */   ownedOf: () => (/* binding */ ownedOf),
+/* harmony export */   restoredExtraOf: () => (/* binding */ restoredExtraOf),
 /* harmony export */   setCopy: () => (/* binding */ setCopy),
 /* harmony export */   setExtra: () => (/* binding */ setExtra),
+/* harmony export */   setRestoredExtra: () => (/* binding */ setRestoredExtra),
 /* harmony export */   stepIndexFor: () => (/* binding */ stepIndexFor),
 /* harmony export */   trainingProgress: () => (/* binding */ trainingProgress)
 /* harmony export */ });
@@ -10187,7 +10189,9 @@ const EMPTY_STORE = {
     watch: false,
     hideCovered: false,
     ignoreMissing: false,
-    steps: {}
+    steps: {},
+    collapsedSites: {},
+    hideDone: false
 };
 /** How many of a material the player has banked. */
 function ownedOf(store, mat) {
@@ -10207,6 +10211,15 @@ function extraOf(store, name) {
 function setExtra(store, name, extra) {
     const held = store.artefacts[name] ?? { restored: 0, damaged: 0 };
     return { ...held, extra: Math.max(0, Math.trunc(extra) || 0) };
+}
+/** Spare restored copies held beyond `needed` — display only; never negative. */
+function restoredExtraOf(store, name) {
+    return Math.max(0, Math.trunc(store.artefacts[name]?.restoredExtra ?? 0));
+}
+/** Set the spare restored count, keeping everything else untouched. */
+function setRestoredExtra(store, name, n) {
+    const held = store.artefacts[name] ?? { restored: 0, damaged: 0 };
+    return { ...held, restoredExtra: Math.max(0, Math.trunc(n) || 0) };
 }
 /**
  * The states of each copy, restored first — what the pip row renders. Copies
@@ -14615,7 +14628,8 @@ function load() {
         artefacts: saved.artefacts ?? {},
         materials: saved.materials ?? {},
         completed: saved.completed ?? {},
-        steps: saved.steps ?? {}
+        steps: saved.steps ?? {},
+        collapsedSites: saved.collapsedSites ?? {}
     };
 }
 const tab = () => (RENDER[store.tab] ? store.tab : "training");
@@ -14701,6 +14715,21 @@ function extras(name) {
 		value="${n || ""}" placeholder="+0"
 		title="Spare damaged copies beyond the ${_data__WEBPACK_IMPORTED_MODULE_7__.ARTEFACTS[name]?.needed ?? 1} you need — their materials count towards Needed on the Materials tab" />`;
 }
+/**
+ * Spare restored copies beyond the ones the pips track. Only for your own
+ * overview — nothing else (materials, XP, filters, collections) reads it.
+ */
+function restoredExtras(name) {
+    const n = (0,_state__WEBPACK_IMPORTED_MODULE_8__.restoredExtraOf)(store, name);
+    return `<input type="number" class="extra restored${n ? " some" : ""}" min="0" data-restored-extra="${esc(name)}"
+		value="${n || ""}" placeholder="+0"
+		title="Spare restored copies beyond the ${_data__WEBPACK_IMPORTED_MODULE_7__.ARTEFACTS[name]?.needed ?? 1} you need — for your overview only, not used in any calculation" />`;
+}
+/** Every tracked copy restored and no spare damaged ones left to restore. */
+function isDone(name, artefact) {
+    const c = (0,_state__WEBPACK_IMPORTED_MODULE_8__.countsOf)(store, name, artefact.needed);
+    return c.restored === artefact.needed && (0,_state__WEBPACK_IMPORTED_MODULE_8__.extraOf)(store, name) === 0;
+}
 function artefactRow(name, artefact) {
     const tip = `${matSummary(artefact)} per copy${wantedBy(artefact) ? ` · wanted by ${wantedBy(artefact)}` : ""}`;
     return `<div class="art">
@@ -14708,6 +14737,7 @@ function artefactRow(name, artefact) {
 		<span class="name" title="${esc(tip)}">${artefactName(name)}</span>
 		${pips(name, artefact.needed)}
 		${extras(name)}
+		${restoredExtras(name)}
 	</div>`;
 }
 // --- Training ---------------------------------------------------------------
@@ -14794,6 +14824,8 @@ function renderArtefacts() {
     const shown = all.filter(([name, a]) => {
         if (needle && !(name.toLowerCase().includes(needle) || a.digsite.toLowerCase().includes(needle)))
             return false;
+        if (store.hideDone && isDone(name, a))
+            return false;
         if (filter === "all")
             return true;
         const counts = (0,_state__WEBPACK_IMPORTED_MODULE_8__.countsOf)(store, name, a.needed);
@@ -14817,8 +14849,10 @@ function renderArtefacts() {
     }
     const groups = [...bySite.entries()]
         .sort((a, b) => Math.min(...a[1].map(x => x[1].level)) - Math.min(...b[1].map(x => x[1].level)))
-        .map(([site, list]) => `<h3>${wikiLink(site)} <span class="muted">(${list.length})</span></h3>` +
-        list.map(([name, a]) => artefactRow(name, a)).join(""))
+        .map(([site, list]) => `<details class="site" data-site="${esc(site)}" ${store.collapsedSites[site] ? "" : "open"}>
+					<summary><h3>${wikiLink(site)} <span class="muted">(${list.length})</span></h3></summary>
+					${list.map(([name, a]) => artefactRow(name, a)).join("")}
+				</details>`)
         .join("");
     view("artefacts").innerHTML =
         `<div class="filters">
@@ -14831,9 +14865,25 @@ function renderArtefacts() {
 				<option value="restored">Restored</option>
 			</select>
 		</div>
+		<div class="art-opts muted">
+			<label title="Leave out artefacts with every copy restored and no spare damaged copies"
+				><input type="checkbox" id="hide-done" ${store.hideDone ? "checked" : ""} /> Hide completed</label>
+			· <button id="sites-collapse">collapse all</button>
+			<button id="sites-expand">expand all</button>
+		</div>
 		<p class="muted" id="art-summary">${artefactSummary()}</p>` +
             (groups || `<div class="empty">Nothing matches.</div>`);
     view("artefacts").querySelector("#art-filter").value = filter;
+    // <details> toggles on its own; just remember which dig sites are folded.
+    // ("toggle" doesn't bubble, so listen on each one after rendering.)
+    view("artefacts").querySelectorAll("details.site").forEach(d => d.addEventListener("toggle", () => {
+        const site = d.dataset.site;
+        if (d.open)
+            delete store.collapsedSites[site];
+        else
+            store.collapsedSites[site] = true;
+        save();
+    }));
 }
 // --- Materials --------------------------------------------------------------
 function renderMaterials() {
@@ -15242,6 +15292,24 @@ view("view").addEventListener("click", e => {
         scanStorage();
         return;
     }
+    if (target.id === "hide-done") {
+        store.hideDone = target.checked;
+        save();
+        renderArtefacts();
+        return;
+    }
+    if (target.id === "sites-collapse" || target.id === "sites-expand") {
+        const collapse = target.id === "sites-collapse";
+        // Every site at this level, not just the ones the filter shows, so a
+        // later search or filter change doesn't surprise you with open groups.
+        store.collapsedSites = {};
+        if (collapse)
+            for (const [, a] of (0,_state__WEBPACK_IMPORTED_MODULE_8__.artefactsUpTo)(level()))
+                store.collapsedSites[a.digsite || "Unknown"] = true;
+        save();
+        renderArtefacts();
+        return;
+    }
     if (target.id === "hide-covered" || target.id === "ignore-missing") {
         const on = target.checked;
         if (target.id === "hide-covered")
@@ -15258,10 +15326,15 @@ view("view").addEventListener("click", e => {
 view("view").addEventListener("input", e => {
     const target = e.target;
     if (target.id === "art-search") {
-        search = target.value;
+        const old = target;
+        search = old.value;
+        const { selectionStart, selectionEnd, selectionDirection } = old;
         renderArtefacts();
-        // Re-rendering replaces the input, so put the caret back where it was.
-        view("artefacts").querySelector("#art-search").focus();
+        // Re-rendering replaces the input, so put the caret back where it was —
+        // focus() alone lands it at the start of the new element.
+        const box = view("artefacts").querySelector("#art-search");
+        box.focus();
+        box.setSelectionRange(selectionStart, selectionEnd, selectionDirection ?? undefined);
     }
     else if (target.id === "art-filter") {
         filter = target.value;
@@ -15284,6 +15357,13 @@ view("view").addEventListener("input", e => {
         const summary = view("artefacts").querySelector("#art-summary");
         if (summary)
             summary.innerHTML = artefactSummary();
+    }
+    else if (target.dataset.restoredExtra) {
+        // Display-only count: store it and leave the rest of the page alone.
+        const name = target.dataset.restoredExtra;
+        target.classList.toggle("some", Number(target.value) > 0);
+        store.artefacts[name] = (0,_state__WEBPACK_IMPORTED_MODULE_8__.setRestoredExtra)(store, name, Number(target.value));
+        save();
     }
 });
 // Register with Alt1 (enables the "add app" button).
